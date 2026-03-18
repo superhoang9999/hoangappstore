@@ -23,7 +23,7 @@ import {
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 import { 
-  getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc 
+  getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, getDoc, setDoc, increment 
 } from 'firebase/firestore';
 
 // Mã kết nối Firebase của bạn
@@ -100,6 +100,9 @@ export default function App() {
   const [newCatName, setNewCatName] = useState('');
   const [catError, setCatError] = useState('');
   const [confirmDialog, setConfirmDialog] = useState(null);
+  
+  // State lưu trữ số lượt truy cập
+  const [visitorCount, setVisitorCount] = useState(0);
 
   useEffect(() => {
     document.title = "Hoàng Appstore";
@@ -155,6 +158,39 @@ export default function App() {
     });
     return () => unsubscribe();
   }, []);
+
+  // ĐẾM SỐ LƯỢT TRUY CẬP (Mỗi thiết bị/trình duyệt là 1 user ẩn danh khác nhau)
+  useEffect(() => {
+    if (!user || !db) return;
+
+    const trackVisitor = async () => {
+      try {
+        const visitorRef = doc(db, 'store_visitors', user.uid);
+        const visitorSnap = await getDoc(visitorRef);
+
+        if (!visitorSnap.exists()) {
+          // Nếu thiết bị này chưa từng truy cập -> Lưu lại để đánh dấu và tăng biến đếm tổng
+          await setDoc(visitorRef, { firstVisit: Date.now() });
+          const statsRef = doc(db, 'store_stats', 'global');
+          await setDoc(statsRef, { visitorCount: increment(1) }, { merge: true });
+        }
+      } catch (error) {
+        console.error("Lỗi đếm lượt truy cập:", error);
+      }
+    };
+
+    trackVisitor();
+
+    // Lắng nghe biến đếm tổng thời gian thực để hiển thị ra màn hình
+    const statsRef = doc(db, 'store_stats', 'global');
+    const unsubStats = onSnapshot(statsRef, (docSnap) => {
+      if (docSnap.exists()) {
+        setVisitorCount(docSnap.data().visitorCount || 0);
+      }
+    });
+
+    return () => unsubStats();
+  }, [user]);
 
   useEffect(() => {
     if (!user || !db) return;
@@ -533,6 +569,23 @@ export default function App() {
             </div>
           </div>
         )}
+
+        {/* CHÂN TRANG & BẢN QUYỀN */}
+        <footer className="mt-auto border-t border-slate-200 bg-slate-50 py-8 w-full flex flex-col items-center justify-center relative z-10">
+          <div className="flex flex-col items-center justify-center gap-3">
+            <p className="text-slate-600 text-sm font-bold tracking-wide uppercase font-tech">
+              Copyright © Nguyễn Xuân Hoàng 2026
+            </p>
+            <div className="flex items-center gap-2 text-xs text-slate-500 bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm transition-all hover:shadow-md hover:border-cyan-200 cursor-default">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
+              </span>
+              Lượt truy cập hệ thống: <span className="font-black text-cyan-600 text-sm ml-1">{visitorCount}</span>
+            </div>
+          </div>
+        </footer>
+
       </div>
 
       {/* Popups & Modals */}
