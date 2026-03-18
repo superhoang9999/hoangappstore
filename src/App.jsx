@@ -403,32 +403,31 @@ export default function App() {
                   <p>Chưa có kết quả tìm kiếm phù hợp.</p>
                 </div>
               ) : (
-                <div className="grid [grid-template-columns:repeat(auto-fill,minmax(280px,1fr))] gap-5 lg:gap-6 w-full">
+                /* THAY ĐỔI: Sử dụng lưới 3-4 cột trên Mobile để giống giao diện iOS, kết hợp với Flex-col cho nội dung bên trong */
+                <div className="grid grid-cols-3 min-[400px]:grid-cols-4 sm:[grid-template-columns:repeat(auto-fill,minmax(280px,1fr))] gap-3 sm:gap-5 lg:gap-6 w-full">
                   {filteredApps.map(app => (
-                    /* THAY ĐỔI: Thêm hover:z-50 để toàn bộ thẻ nổi lên trên cùng khi rê chuột, chống che lấp tuyệt đối */
                     <div key={app.id} className="group relative w-full h-full block rounded-2xl transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_10px_25px_-5px_rgba(6,182,212,0.3)] hover:z-50">
                       
-                      {/* 1. LỚP VIỀN NEON: Nằm dưới cùng, nhô ra ngoài 2px, có gradient đang quay */}
+                      {/* 1. LỚP VIỀN NEON */}
                       <div className="absolute -inset-[2px] rounded-[18px] opacity-0 group-hover:opacity-100 overflow-hidden pointer-events-none z-0">
                         <div className="absolute top-1/2 left-1/2 w-[200%] h-[200%] -translate-x-1/2 -translate-y-1/2 bg-[conic-gradient(transparent_75%,#06b6d4_100%)] animate-[spin_2s_linear_infinite]"></div>
                       </div>
 
-                      {/* 2. TOOLTIP: Thay đổi nền tối (slate-900) đặc, chữ xanh neon phát sáng */}
+                      {/* 2. TOOLTIP */}
                       <div className="absolute z-50 bottom-[105%] left-1/2 transform -translate-x-1/2 mb-3 w-72 pointer-events-none hidden group-hover:block">
                         <div className="animate-in fade-in zoom-in duration-200 origin-bottom">
                           <div className="bg-slate-900 border border-cyan-500/50 rounded-xl p-4 shadow-[0_0_20px_rgba(6,182,212,0.6)] relative">
-                            {/* THAY ĐỔI: Bỏ font-bold, thay bằng font-normal để nét chữ thanh thoát, không bị đậm */}
                             <p className="text-[13px] text-cyan-400 [text-shadow:0_0_8px_rgba(34,211,238,0.8)] leading-relaxed font-normal whitespace-pre-wrap">{app.description}</p>
                             <div className="absolute -bottom-[9px] left-1/2 -translate-x-1/2 w-4 h-4 bg-slate-900 border-b border-r border-cyan-500/50 rotate-45"></div>
                           </div>
                         </div>
                       </div>
 
-                      {/* 3. NỘI DUNG THẺ: Cố định nền trắng, đè lên trên lớp viền (z-10) tạo ra khoảng trống ở giữa */}
-                      <div className="relative z-10 w-full h-full bg-white border border-gray-100 group-hover:border-transparent rounded-2xl p-4 flex items-center gap-3 sm:gap-4 min-w-0 transition-colors">
+                      {/* 3. NỘI DUNG THẺ: Tối ưu cho Mobile (Xếp dọc, ẩn mô tả) và Desktop (Xếp ngang, hiển thị đầy đủ) */}
+                      <div className="relative z-10 w-full h-full bg-white border border-gray-100 group-hover:border-transparent rounded-2xl p-3 sm:p-4 flex flex-col sm:flex-row items-center gap-2 sm:gap-4 min-w-0 transition-colors">
                         
                         {/* Icon */}
-                        <a href={app.link} target="_blank" rel="noopener noreferrer" className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shadow-inner group-hover:scale-105 transition-transform block">
+                        <a href={app.link} target="_blank" rel="noopener noreferrer" className="w-[52px] h-[52px] sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-[14px] sm:rounded-xl overflow-hidden border border-gray-100 shadow-inner group-hover:scale-105 transition-transform block">
                           <img 
                             src={app.iconUrl || FALLBACK_IMAGE} 
                             alt={app.name} 
@@ -438,13 +437,16 @@ export default function App() {
                         </a>
 
                         {/* Text Container */}
-                        <div className="flex-1 overflow-hidden">
+                        <div className="flex-1 overflow-hidden w-full text-center sm:text-left flex flex-col justify-center">
                           <a href={app.link} target="_blank" rel="noopener noreferrer" className="block w-full">
-                            <h3 className="font-bold text-gray-900 text-sm truncate w-full" title={app.name}>{app.name}</h3>
-                            <p className="text-xs text-gray-500 line-clamp-2 leading-tight mt-1 min-h-[2rem] w-full">{app.description}</p>
+                            {/* Font thường (font-normal) trên Mobile, đậm trên Desktop */}
+                            <h3 className="font-normal sm:font-bold text-gray-800 sm:text-gray-900 text-[11px] sm:text-sm line-clamp-2 sm:truncate w-full leading-tight sm:leading-normal" title={app.name}>{app.name}</h3>
+                            {/* Mô tả ẩn hoàn toàn trên Mobile để tiết kiệm không gian */}
+                            <p className="hidden sm:block text-xs text-gray-500 line-clamp-2 leading-tight mt-1 min-h-[2rem] w-full">{app.description}</p>
                           </a>
                           
-                          <div className="flex flex-wrap items-center gap-2 mt-1 w-full overflow-hidden">
+                          {/* Tags ẩn trên Mobile */}
+                          <div className="hidden sm:flex flex-wrap items-center gap-2 mt-1 w-full overflow-hidden">
                             <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md flex items-center border border-blue-100 truncate">
                               {getCategoryIcon(app.category)}
                               <span className="truncate">{app.category}</span>
@@ -457,11 +459,19 @@ export default function App() {
                           </div>
                         </div>
 
-                        {/* Admin Buttons */}
+                        {/* Admin Buttons - Desktop */}
                         {isAdmin && (
-                          <div className="flex flex-col gap-2 pl-2 sm:pl-3 border-l border-gray-100 flex-shrink-0">
+                          <div className="hidden sm:flex flex-col gap-2 pl-2 sm:pl-3 border-l border-gray-100 flex-shrink-0">
                             <button onClick={() => handleOpenForm(app)} className="p-1.5 sm:p-2 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors"><Edit size={14} className="sm:w-4 sm:h-4" /></button>
                             <button onClick={() => handleDeleteApp(app.id, app.name)} className="p-1.5 sm:p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} className="sm:w-4 sm:h-4" /></button>
+                          </div>
+                        )}
+                        
+                        {/* Admin Buttons - Phụ riêng cho Mobile (nhỏ gọn ở góc) */}
+                        {isAdmin && (
+                          <div className="flex sm:hidden absolute top-1 right-1 flex-col gap-1">
+                            <button onClick={() => handleOpenForm(app)} className="p-1.5 text-cyan-600 bg-white/90 backdrop-blur-sm rounded-full shadow-sm border border-gray-100"><Edit size={12} /></button>
+                            <button onClick={() => handleDeleteApp(app.id, app.name)} className="p-1.5 text-red-500 bg-white/90 backdrop-blur-sm rounded-full shadow-sm border border-gray-100"><Trash2 size={12} /></button>
                           </div>
                         )}
                       </div>
