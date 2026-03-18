@@ -395,9 +395,8 @@ export default function App() {
                   <p>Chưa có kết quả tìm kiếm phù hợp.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 lg:gap-6">
                   {filteredApps.map(app => (
-                    // BỎ overflow-hidden ở thẻ div này để Tooltip không bị cắt mất
                     <div key={app.id} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-lg hover:border-cyan-300 transition-all group relative flex items-center h-full">
                       
                       {/* Tooltip Pop-up */}
@@ -411,7 +410,8 @@ export default function App() {
                       </div>
 
                       <a href={app.link} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center min-w-0 pr-2">
-                        <div className="w-16 h-16 md:w-20 md:h-20 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shadow-inner group-hover:scale-105 transition-transform flex items-center justify-center mr-4">
+                        {/* Đã giảm size icon xuống w-16 h-16 để nhường chỗ cho chữ */}
+                        <div className="w-14 h-14 md:w-16 md:h-16 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shadow-inner group-hover:scale-105 transition-transform flex items-center justify-center mr-3 md:mr-4">
                           <img 
                             src={app.iconUrl} 
                             alt={app.name} 
@@ -419,18 +419,18 @@ export default function App() {
                             onError={(e) => { e.target.src = 'https://via.placeholder.com/150?text=App'; }}
                           />
                         </div>
-                        {/* Cấu trúc min-w-0 để đảm bảo chữ truncate chính xác mà không phá vỡ lưới */}
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-bold text-gray-900 text-lg md:text-xl truncate mb-1">{app.name}</h3>
-                          <p className="text-sm text-gray-500 line-clamp-2 leading-snug mb-2 h-10 whitespace-normal">{app.description}</p>
+                          {/* Tên ứng dụng được mở rộng không gian */}
+                          <h3 className="font-bold text-gray-900 text-base md:text-lg truncate mb-1">{app.name}</h3>
+                          <p className="text-xs md:text-sm text-gray-500 line-clamp-2 leading-snug mb-2 h-9 whitespace-normal">{app.description}</p>
                           
                           <div className="flex items-center gap-2 overflow-hidden">
-                            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md flex items-center border border-blue-100 max-w-[120px] truncate flex-shrink-0">
+                            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md flex items-center border border-blue-100 max-w-[100px] md:max-w-[120px] truncate flex-shrink-0">
                               {getCategoryIcon(app.category)}
                               <span className="truncate">{app.category}</span>
                             </span>
                             {app.releaseDate && (
-                              <span className="text-[10px] font-bold text-slate-500 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200 flex-shrink-0">
+                              <span className="text-[10px] font-bold text-slate-500 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200 flex-shrink-0 hidden sm:inline-block">
                                 {new Date(app.releaseDate).toLocaleDateString('vi-VN')}
                               </span>
                             )}
