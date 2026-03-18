@@ -294,12 +294,11 @@ export default function App() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-800 font-sans selection:bg-cyan-500 selection:text-white flex flex-col items-center">
-      {/* Tối ưu chuẩn Desktop Full HD 1920x1080 với max-w-[1400px] */}
-      <div className="max-w-[1400px] w-full bg-white min-h-screen shadow-2xl sm:rounded-b-3xl relative border-x border-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-100 text-slate-800 font-sans selection:bg-cyan-500 selection:text-white flex flex-col">
+      <div className="w-full max-w-screen-2xl mx-auto bg-white min-h-screen shadow-2xl sm:rounded-b-3xl relative border-x border-slate-100 flex flex-col">
         
         {/* Header */}
-        <div className="bg-slate-900 relative px-5 md:px-8 lg:px-12 pt-8 pb-6 text-white sticky top-0 z-40 shadow-[0_10px_30px_-10px_rgba(6,182,212,0.4)] border-b border-cyan-500/30 sm:rounded-t-none">
+        <div className="bg-slate-900 relative px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pt-8 pb-6 text-white sticky top-0 z-40 shadow-[0_10px_30px_-10px_rgba(6,182,212,0.4)] border-b border-cyan-500/30 sm:rounded-t-none">
           <div className="absolute inset-0 opacity-20 grid-pattern pointer-events-none"></div>
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-cyan-500/10 to-transparent pointer-events-none"></div>
           
@@ -315,7 +314,7 @@ export default function App() {
               </h1>
             </div>
 
-            <div className="relative w-full md:max-w-md lg:max-w-xl xl:max-w-3xl group mx-auto">
+            <div className="relative w-full max-w-full md:max-w-xl lg:max-w-2xl group mx-auto">
               <Search className="absolute left-4 top-3.5 text-cyan-500 group-focus-within:text-cyan-300 transition-colors" size={20} />
               <input 
                 type="text" 
@@ -361,7 +360,7 @@ export default function App() {
         {/* Content Area */}
         {activeView === 'apps' ? (
           <div className="pb-24">
-            <div className="px-5 md:px-8 lg:px-12 py-4 overflow-x-auto no-scrollbar bg-slate-50 flex gap-3 border-b border-slate-200">
+            <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-4 overflow-x-auto no-scrollbar bg-slate-50 flex gap-3 border-b border-slate-200">
               {displayCategories.map(cat => (
                 <button
                   key={cat}
@@ -374,7 +373,7 @@ export default function App() {
             </div>
 
             {isAdmin && (
-              <div className="mx-5 md:mx-8 lg:mx-12 my-6 bg-slate-900 rounded-xl p-4 flex flex-col md:flex-row justify-between items-center gap-4 border border-cyan-500/30 shadow-lg relative overflow-hidden">
+              <div className="mx-4 sm:mx-6 md:mx-8 lg:mx-12 xl:mx-16 my-6 bg-slate-900 rounded-xl p-4 flex flex-col md:flex-row justify-between items-center gap-4 border border-cyan-500/30 shadow-lg relative overflow-hidden">
                 <div className="absolute inset-0 opacity-10 pointer-events-none grid-pattern"></div>
                 <div className="flex items-center text-cyan-400 font-bold uppercase tracking-widest text-sm relative z-10">
                   <ShieldCheck size={20} className="mr-2 text-cyan-300 drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]" /> BẢNG ĐIỀU KHIỂN
@@ -386,7 +385,7 @@ export default function App() {
               </div>
             )}
 
-            <div className="px-5 md:px-8 lg:px-12 mt-6">
+            <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mt-6">
               {loading ? (
                 <div className="flex justify-center py-20"><Loader2 className="animate-spin text-cyan-600" size={32} /></div>
               ) : filteredApps.length === 0 ? (
@@ -395,7 +394,7 @@ export default function App() {
                   <p>Chưa có kết quả tìm kiếm phù hợp.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid [grid-template-columns:repeat(auto-fill,minmax(320px,1fr))] gap-6">
                   {filteredApps.map(app => (
                     <div key={app.id} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-lg hover:border-cyan-300 transition-all group relative w-full h-full block">
                       
@@ -409,8 +408,7 @@ export default function App() {
                         </div>
                       </div>
 
-                      {/* Sử dụng cấu trúc vững chắc để chống vỡ Text tuyệt đối */}
-                      <div className="flex items-center w-full h-full gap-4">
+                      <div className="flex items-center w-full h-full gap-4 min-w-0">
                         
                         {/* Icon */}
                         <a href={app.link} target="_blank" rel="noopener noreferrer" className="w-16 h-16 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shadow-inner group-hover:scale-105 transition-transform block">
@@ -422,7 +420,7 @@ export default function App() {
                           />
                         </a>
 
-                        {/* Text Container - Dùng overflow-hidden là "liều thuốc tiên" chống co rút chữ */}
+                        {/* Text Container */}
                         <div className="flex-1 overflow-hidden">
                           <a href={app.link} target="_blank" rel="noopener noreferrer" className="block w-full">
                             <h3 className="font-bold text-gray-900 text-lg truncate w-full" title={app.name}>{app.name}</h3>
@@ -457,7 +455,7 @@ export default function App() {
             </div>
           </div>
         ) : (
-          <div className="px-5 md:px-8 lg:px-12 py-8 pb-24">
+          <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 pb-24">
             <div className="w-full mx-auto">
               <div className="flex items-center mb-8">
                 <Youtube className="text-red-500 mr-3 drop-shadow-md" size={32} />
