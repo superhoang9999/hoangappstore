@@ -122,7 +122,7 @@ export default function App() {
       description: "Kho phần mềm và Video AI chọn lọc",
       start_url: ".",
       display: "standalone",
-      background_color: "#f8fafc",
+      background_color: "#ffffff",
       theme_color: "#0f172a",
       icons: [
         { src: iconUrl, sizes: "192x192", type: "image/png", purpose: "any maskable" },
@@ -294,11 +294,13 @@ export default function App() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-800 font-sans selection:bg-cyan-500 selection:text-white flex flex-col">
-      <div className="w-full max-w-screen-2xl mx-auto bg-white min-h-screen shadow-2xl sm:rounded-b-3xl relative border-x border-slate-100 flex flex-col">
+    // Xóa background xám, đặt thẳng background trắng cho toàn bộ body
+    <div className="min-h-screen bg-white text-slate-800 font-sans selection:bg-cyan-500 selection:text-white flex flex-col">
+      {/* XÓA BỎ HOÀN TOÀN max-w, shadow, border, rounded. Nền trắng bung lụa 100% width */}
+      <div className="w-full bg-white min-h-screen relative flex flex-col">
         
-        {/* Header */}
-        <div className="bg-slate-900 relative px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pt-8 pb-6 text-white sticky top-0 z-40 shadow-[0_10px_30px_-10px_rgba(6,182,212,0.4)] border-b border-cyan-500/30 sm:rounded-t-none">
+        {/* Header: Vẫn giữ padding để nội dung bên trong Header không chạm sát lề màn hình */}
+        <div className="bg-slate-900 relative px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pt-8 pb-6 text-white sticky top-0 z-40 shadow-[0_10px_30px_-10px_rgba(6,182,212,0.4)] border-b border-cyan-500/30">
           <div className="absolute inset-0 opacity-20 grid-pattern pointer-events-none"></div>
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-cyan-500/10 to-transparent pointer-events-none"></div>
           
@@ -314,7 +316,8 @@ export default function App() {
               </h1>
             </div>
 
-            <div className="relative w-full max-w-full md:max-w-xl lg:max-w-2xl group mx-auto">
+            {/* Thanh tìm kiếm có max-width để không bị kéo dài vô tận xấu xí */}
+            <div className="relative w-full max-w-full md:max-w-xl lg:max-w-2xl xl:max-w-3xl group mx-auto">
               <Search className="absolute left-4 top-3.5 text-cyan-500 group-focus-within:text-cyan-300 transition-colors" size={20} />
               <input 
                 type="text" 
@@ -394,7 +397,8 @@ export default function App() {
                   <p>Chưa có kết quả tìm kiếm phù hợp.</p>
                 </div>
               ) : (
-                <div className="grid [grid-template-columns:repeat(auto-fill,minmax(320px,1fr))] gap-6">
+                /* THAY ĐỔI CỐT LÕI: auto-fill, minmax(300px, 1fr) - Tự động dàn hàng ngang ra vô tận nếu có chỗ */
+                <div className="grid [grid-template-columns:repeat(auto-fill,minmax(300px,1fr))] gap-6">
                   {filteredApps.map(app => (
                     <div key={app.id} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-lg hover:border-cyan-300 transition-all group relative w-full h-full block">
                       
@@ -455,14 +459,15 @@ export default function App() {
             </div>
           </div>
         ) : (
-          <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 pb-24">
-            <div className="w-full mx-auto">
+          <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 pb-24 w-full">
+            <div className="w-full">
               <div className="flex items-center mb-8">
                 <Youtube className="text-red-500 mr-3 drop-shadow-md" size={32} />
                 <h2 className="text-2xl font-black text-slate-800 font-tech uppercase tracking-wider">Danh Sách Phát AI</h2>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {/* Tương tự với Video AI: Tự động sắp xếp cột theo chiều rộng màn hình */}
+              <div className="grid [grid-template-columns:repeat(auto-fill,minmax(350px,1fr))] gap-6">
                 {AI_PLAYLISTS.map((pl) => (
                   <div 
                     key={pl.id}
