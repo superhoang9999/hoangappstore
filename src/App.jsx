@@ -295,10 +295,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-800 font-sans selection:bg-cyan-500 selection:text-white">
-      <div className="max-w-6xl mx-auto bg-white min-h-screen shadow-2xl sm:rounded-b-3xl overflow-hidden relative border-x border-slate-100">
+      <div className="max-w-[1600px] w-full xl:w-[96%] mx-auto bg-white min-h-screen shadow-2xl sm:rounded-b-3xl overflow-hidden relative border-x border-slate-100">
         
         {/* Header - Optimized for standard desktop */}
-        <div className="bg-slate-900 relative px-5 pt-8 pb-6 text-white sticky top-0 z-40 shadow-[0_10px_30px_-10px_rgba(6,182,212,0.4)] border-b border-cyan-500/30">
+        <div className="bg-slate-900 relative px-5 md:px-8 lg:px-10 pt-8 pb-6 text-white sticky top-0 z-40 shadow-[0_10px_30px_-10px_rgba(6,182,212,0.4)] border-b border-cyan-500/30">
           <div className="absolute inset-0 opacity-20 grid-pattern pointer-events-none"></div>
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-cyan-500/10 to-transparent pointer-events-none"></div>
           
@@ -360,7 +360,7 @@ export default function App() {
         {/* Content Area */}
         {activeView === 'apps' ? (
           <div className="pb-24">
-            <div className="px-5 py-4 overflow-x-auto no-scrollbar bg-slate-50 flex gap-2 border-b border-slate-200">
+            <div className="px-5 md:px-8 lg:px-10 py-4 overflow-x-auto no-scrollbar bg-slate-50 flex gap-2 border-b border-slate-200">
               {displayCategories.map(cat => (
                 <button
                   key={cat}
@@ -373,7 +373,7 @@ export default function App() {
             </div>
 
             {isAdmin && (
-              <div className="mx-5 my-5 bg-slate-900 rounded-xl p-4 flex flex-col md:flex-row justify-between items-center gap-4 border border-cyan-500/30 shadow-lg relative overflow-hidden">
+              <div className="mx-5 md:mx-8 lg:mx-10 my-5 bg-slate-900 rounded-xl p-4 flex flex-col md:flex-row justify-between items-center gap-4 border border-cyan-500/30 shadow-lg relative overflow-hidden">
                 <div className="absolute inset-0 opacity-10 pointer-events-none grid-pattern"></div>
                 <div className="flex items-center text-cyan-400 font-bold uppercase tracking-widest text-sm relative z-10">
                   <ShieldCheck size={20} className="mr-2 text-cyan-300 drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]" /> BẢNG ĐIỀU KHIỂN
@@ -385,7 +385,7 @@ export default function App() {
               </div>
             )}
 
-            <div className="px-5 mt-6">
+            <div className="px-5 md:px-8 lg:px-10 mt-6">
               {loading ? (
                 <div className="flex justify-center py-20"><Loader2 className="animate-spin text-cyan-600" size={32} /></div>
               ) : filteredApps.length === 0 ? (
@@ -394,7 +394,7 @@ export default function App() {
                   <p>Chưa có kết quả tìm kiếm phù hợp.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5">
                   {filteredApps.map(app => (
                     <div key={app.id} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-cyan-200 transition-all group relative flex items-center h-full">
                       
@@ -448,14 +448,14 @@ export default function App() {
             </div>
           </div>
         ) : (
-          <div className="px-5 py-8 pb-24">
-            <div className="max-w-5xl mx-auto">
+          <div className="px-5 md:px-8 lg:px-10 py-8 pb-24">
+            <div className="w-full mx-auto">
               <div className="flex items-center mb-8">
                 <Youtube className="text-red-500 mr-3 drop-shadow-md" size={32} />
                 <h2 className="text-2xl font-black text-slate-800 font-tech uppercase tracking-wider">Danh Sách Phát AI</h2>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {AI_PLAYLISTS.map((pl) => (
                   <div 
                     key={pl.id}
