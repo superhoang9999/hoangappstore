@@ -316,11 +316,20 @@ export default function App() {
   };
 
   const getCategoryIcon = (cat) => {
-    switch(cat) {
-      case 'Game': return <Gamepad2 size={14} className="mr-1" />;
-      case 'Phần mềm': return <MonitorPlay size={14} className="mr-1" />;
-      default: return <LayoutGrid size={14} className="mr-1" />;
+    if (!cat) return <LayoutGrid size={14} className="mr-1" />;
+    
+    // Chuẩn hóa tên để bắt chính xác dù là "Game" hay "Games"
+    const normalized = cat.trim();
+    
+    if (normalized === 'Games' || normalized === 'Game') {
+      return <Gamepad2 size={14} className="mr-1" />; // Biểu tượng tay cầm chơi game
     }
+    if (normalized === 'Phần mềm') {
+      return <LayoutGrid size={14} className="mr-1" />; // Biểu tượng 4 ô vuông
+    }
+    
+    // Biểu tượng mặc định cho các danh mục tự tạo khác
+    return <MonitorPlay size={14} className="mr-1" />; 
   };
 
   const displayCategories = ['Tất cả', ...dbCategories.map(c => c.name)];
