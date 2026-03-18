@@ -295,7 +295,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-800 font-sans selection:bg-cyan-500 selection:text-white flex flex-col items-center">
-      {/* Container mở rộng cho Desktop (max 1600px, 96% màn hình) nhưng không làm hỏng Tooltip */}
+      {/* Khung giới hạn tối đa 1600px cho màn hình rộng */}
       <div className="max-w-[1600px] w-full xl:w-[96%] bg-white min-h-screen shadow-2xl sm:rounded-b-3xl relative border-x border-slate-100 flex flex-col">
         
         {/* Header */}
@@ -395,11 +395,12 @@ export default function App() {
                   <p>Chưa có kết quả tìm kiếm phù hợp.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 lg:gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6">
                   {filteredApps.map(app => (
+                    // TUYỆT ĐỐI KHÔNG thêm overflow-hidden vào thẻ này để Pop-up được bay ra ngoài
                     <div key={app.id} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-lg hover:border-cyan-300 transition-all group relative flex items-center h-full">
                       
-                      {/* Tooltip Pop-up */}
+                      {/* Tooltip Pop-up - Hiện ra khi rê chuột */}
                       <div className="absolute z-50 bottom-full left-1/2 transform -translate-x-1/2 mb-4 w-72 pointer-events-none hidden group-hover:block">
                         <div className="animate-in fade-in zoom-in duration-200 origin-bottom">
                           <div className="bg-slate-900/90 backdrop-blur-md border border-cyan-400/30 rounded-xl p-4 shadow-[0_0_20px_rgba(34,211,238,0.3)] relative">
@@ -409,9 +410,11 @@ export default function App() {
                         </div>
                       </div>
 
+                      {/* Flexbox an toàn chống vỡ chữ: dùng min-w-0 và không dùng w-full */}
                       <a href={app.link} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center min-w-0 pr-2">
-                        {/* Đã giảm size icon xuống w-16 h-16 để nhường chỗ cho chữ */}
-                        <div className="w-14 h-14 md:w-16 md:h-16 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shadow-inner group-hover:scale-105 transition-transform flex items-center justify-center mr-3 md:mr-4">
+                        
+                        {/* Box Ảnh */}
+                        <div className="w-16 h-16 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shadow-inner group-hover:scale-105 transition-transform flex items-center justify-center mr-4">
                           <img 
                             src={app.iconUrl} 
                             alt={app.name} 
@@ -419,25 +422,29 @@ export default function App() {
                             onError={(e) => { e.target.src = 'https://via.placeholder.com/150?text=App'; }}
                           />
                         </div>
+                        
+                        {/* Box Text */}
                         <div className="flex-1 min-w-0">
-                          {/* Tên ứng dụng được mở rộng không gian */}
-                          <h3 className="font-bold text-gray-900 text-base md:text-lg truncate mb-1">{app.name}</h3>
-                          <p className="text-xs md:text-sm text-gray-500 line-clamp-2 leading-snug mb-2 h-9 whitespace-normal">{app.description}</p>
+                          {/* Đã xoá class w-full gây lỗi */}
+                          <h3 className="font-bold text-gray-900 text-lg truncate mb-1">{app.name}</h3>
+                          <p className="text-sm text-gray-500 line-clamp-2 leading-snug mb-2 whitespace-normal">{app.description}</p>
                           
                           <div className="flex items-center gap-2 overflow-hidden">
-                            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md flex items-center border border-blue-100 max-w-[100px] md:max-w-[120px] truncate flex-shrink-0">
+                            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md flex items-center border border-blue-100 max-w-[120px] truncate flex-shrink-0">
                               {getCategoryIcon(app.category)}
                               <span className="truncate">{app.category}</span>
                             </span>
                             {app.releaseDate && (
-                              <span className="text-[10px] font-bold text-slate-500 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200 flex-shrink-0 hidden sm:inline-block">
+                              <span className="text-[10px] font-bold text-slate-500 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200 flex-shrink-0 hidden sm:inline-block truncate">
                                 {new Date(app.releaseDate).toLocaleDateString('vi-VN')}
                               </span>
                             )}
                           </div>
                         </div>
+
                       </a>
 
+                      {/* Nút Admin */}
                       {isAdmin && (
                         <div className="flex flex-col gap-2 ml-2 border-l border-slate-100 pl-3 flex-shrink-0">
                           <button onClick={() => handleOpenForm(app)} className="p-1.5 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-md transition-colors"><Edit size={16} /></button>
