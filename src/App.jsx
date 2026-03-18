@@ -276,9 +276,19 @@ export default function App() {
     });
   };
 
+  const getCategoryIcon = (cat) => {
+    switch(cat) {
+      case 'Game': return <Gamepad2 size={14} className="mr-1" />;
+      case 'Phần mềm': return <MonitorPlay size={14} className="mr-1" />;
+      default: return <LayoutGrid size={14} className="mr-1" />;
+    }
+  };
+
   const displayCategories = ['Tất cả', ...dbCategories.map(c => c.name)];
   const filteredApps = apps.filter(app => {
-    const matchesSearch = app.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const searchLow = searchQuery.toLowerCase();
+    const matchesSearch = app.name.toLowerCase().includes(searchLow) || 
+                          app.description.toLowerCase().includes(searchLow);
     const matchesCategory = activeCategory === 'Tất cả' || app.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
@@ -300,7 +310,7 @@ export default function App() {
                 className="w-12 h-12 md:w-16 md:h-16 mr-4 object-contain drop-shadow-[0_0_15px_rgba(34,211,238,0.6)] group-hover:scale-110 transition-transform"
               />
               <h1 className="text-3xl md:text-5xl font-black tracking-tighter font-tech uppercase text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-                Hoàng<span className="text-white ml-2 font-light tracking-normal opacity-90">Appstore</span>
+                Hoàng<span className="text-white ml-1 font-light tracking-normal opacity-90 uppercase">Appstore</span>
               </h1>
             </div>
 
@@ -308,7 +318,7 @@ export default function App() {
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-cyan-600 group-focus-within:text-cyan-400" size={22} />
               <input 
                 type="text" 
-                placeholder="Tìm kiếm trong kho ứng dụng..." 
+                placeholder="Tìm kiếm ứng dụng, game, tính năng..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-slate-950/40 text-white placeholder-slate-500 border border-white/10 rounded-2xl py-4 pl-14 pr-6 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:bg-slate-800/80 transition-all shadow-inner"
@@ -347,15 +357,15 @@ export default function App() {
           </div>
         </div>
 
-        {/* Content Area - Responsive Columns */}
+        {/* Content Area */}
         {activeView === 'apps' ? (
           <div className="pb-24">
-            <div className="px-6 md:px-12 py-6 overflow-x-auto bg-slate-50/50 flex gap-3 border-b border-slate-100">
+            <div className="px-6 md:px-12 py-6 overflow-x-auto no-scrollbar bg-slate-50/50 flex gap-3 border-b border-slate-100">
               {displayCategories.map(cat => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all border ${activeCategory === cat ? 'bg-slate-900 text-white border-slate-900 shadow-md' : 'bg-white text-slate-500 border-slate-200 hover:border-cyan-300'}`}
+                  className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-bold transition-all border ${activeCategory === cat ? 'bg-slate-900 text-white border-slate-900 shadow-md scale-105' : 'bg-white text-slate-500 border-slate-200 hover:border-cyan-300'}`}
                 >
                   {cat}
                 </button>
@@ -365,7 +375,7 @@ export default function App() {
             {isAdmin && (
               <div className="mx-6 md:mx-12 my-6 bg-slate-900 rounded-2xl p-5 flex flex-col md:flex-row justify-between items-center gap-4 border border-cyan-500/20">
                 <div className="flex items-center text-cyan-400 font-bold uppercase tracking-widest">
-                  <ShieldCheck size={24} className="mr-3" /> QUẢN TRỊ VIÊN
+                  <ShieldCheck size={24} className="mr-3 text-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.5)]" /> QUẢN TRỊ VIÊN
                 </div>
                 <div className="flex gap-4 w-full md:w-auto">
                   <button onClick={() => setShowCatManager(true)} className="flex-1 md:flex-none px-6 py-2.5 bg-slate-800 text-cyan-300 rounded-xl hover:bg-slate-700 font-bold text-sm">Danh mục</button>
@@ -377,23 +387,28 @@ export default function App() {
             <div className="px-6 md:px-12 mt-8">
               {loading ? (
                 <div className="flex justify-center py-32"><Loader2 className="animate-spin text-cyan-600" size={48} /></div>
+              ) : filteredApps.length === 0 ? (
+                <div className="text-center py-20 text-slate-400">
+                  <LayoutGrid size={48} className="mx-auto mb-4 opacity-20 text-cyan-500" />
+                  <p>Chưa có kết quả tìm kiếm phù hợp.</p>
+                </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   {filteredApps.map(app => (
-                    <div key={app.id} className="bg-white border border-slate-100 rounded-3xl p-5 shadow-sm hover:shadow-xl hover:border-cyan-200 transition-all group relative flex flex-col h-full">
+                    <div key={app.id} className="bg-white border border-gray-100 rounded-3xl p-4 shadow-sm hover:shadow-xl hover:border-cyan-200 transition-all group relative flex items-center h-full">
                       
-                      {/* Tooltip Popup */}
+                      {/* Tooltip Pop-up (Neon Style) */}
                       <div className="absolute z-50 bottom-full left-1/2 transform -translate-x-1/2 mb-4 w-72 pointer-events-none hidden group-hover:block">
-                        <div className="animate-in fade-in zoom-in duration-200">
-                          <div className="bg-slate-900/90 backdrop-blur-md border border-cyan-400/30 rounded-2xl p-4 shadow-2xl relative">
-                            <p className="text-[13px] text-cyan-50 leading-relaxed">{app.description}</p>
+                        <div className="animate-in fade-in zoom-in duration-200 origin-bottom">
+                          <div className="bg-slate-900/90 backdrop-blur-md border border-cyan-400/30 rounded-2xl p-4 shadow-[0_0_25px_rgba(34,211,238,0.3)] relative">
+                            <p className="text-[13px] text-cyan-50 leading-relaxed font-medium">{app.description}</p>
                             <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-slate-900/90 border-b border-r border-cyan-400/30 rotate-45"></div>
                           </div>
                         </div>
                       </div>
 
-                      <a href={app.link} target="_blank" rel="noopener noreferrer" className="flex-1 flex flex-col items-center text-center">
-                        <div className="w-24 h-24 mb-4 bg-slate-50 rounded-2xl overflow-hidden border border-slate-100 shadow-inner group-hover:scale-105 transition-transform">
+                      <a href={app.link} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center min-w-0 pr-2">
+                        <div className="w-20 h-20 md:w-24 md:h-24 flex-shrink-0 bg-slate-50 rounded-2xl overflow-hidden border border-slate-100 shadow-inner group-hover:scale-105 transition-transform flex items-center justify-center mr-4">
                           <img 
                             src={app.iconUrl} 
                             alt={app.name} 
@@ -401,25 +416,28 @@ export default function App() {
                             onError={(e) => { e.target.src = 'https://via.placeholder.com/150?text=App'; }}
                           />
                         </div>
-                        <h3 className="font-black text-slate-800 text-lg line-clamp-1 mb-1">{app.name}</h3>
-                        <p className="text-sm text-slate-500 line-clamp-2 h-10 mb-4 px-2">{app.description}</p>
-                        
-                        <div className="flex flex-wrap justify-center gap-2 mb-4">
-                          <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full uppercase tracking-tighter">
-                            {app.category}
-                          </span>
-                          {app.releaseDate && (
-                            <span className="text-[10px] font-bold text-slate-400 bg-slate-50 px-3 py-1 rounded-full">
-                              {new Date(app.releaseDate).toLocaleDateString('vi-VN')}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-black text-slate-800 text-lg md:text-xl truncate leading-tight mb-1">{app.name}</h3>
+                          <p className="text-sm text-slate-500 line-clamp-2 h-10 leading-snug mb-2">{app.description}</p>
+                          
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-lg uppercase tracking-tighter flex items-center border border-blue-100">
+                              {getCategoryIcon(app.category)}
+                              {app.category}
                             </span>
-                          )}
+                            {app.releaseDate && (
+                              <span className="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-100">
+                                {new Date(app.releaseDate).toLocaleDateString('vi-VN')}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </a>
 
                       {isAdmin && (
-                        <div className="flex justify-center gap-2 pt-4 mt-auto border-t border-slate-50">
-                          <button onClick={() => handleOpenForm(app)} className="p-2 text-slate-400 hover:text-cyan-600 transition-colors"><Edit size={18} /></button>
-                          <button onClick={() => handleDeleteApp(app.id, app.name)} className="p-2 text-slate-400 hover:text-red-500 transition-colors"><Trash2 size={18} /></button>
+                        <div className="flex flex-col gap-2 ml-2 border-l border-slate-100 pl-3">
+                          <button onClick={() => handleOpenForm(app)} className="p-2 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors"><Edit size={18} /></button>
+                          <button onClick={() => handleDeleteApp(app.id, app.name)} className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={18} /></button>
                         </div>
                       )}
                     </div>
@@ -445,9 +463,9 @@ export default function App() {
                   >
                     <div className="relative aspect-video rounded-3xl overflow-hidden mb-6 bg-slate-900">
                       <img src={pl.thumbnail} alt={pl.title} className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-700" />
-                      <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="absolute inset-0 flex items-center justify-center bg-slate-900/20 group-hover:bg-transparent transition-colors">
                         <div className="w-20 h-20 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/20 group-hover:scale-110 group-hover:bg-cyan-500 transition-all duration-300">
-                          <Play size={40} className="text-white fill-white ml-2" />
+                          <Youtube size={40} className="text-white fill-red-600" />
                         </div>
                       </div>
                     </div>
@@ -467,7 +485,7 @@ export default function App() {
           <div className="bg-white rounded-3xl w-full max-w-sm p-8 shadow-2xl relative animate-in zoom-in duration-300">
             <button onClick={() => setShowLogin(false)} className="absolute top-6 right-6 text-slate-400 hover:text-slate-900"><X size={24} /></button>
             <div className="text-center mb-8">
-              <div className="bg-cyan-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-cyan-600 shadow-inner">
+              <div className="bg-cyan-50 w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-cyan-600 shadow-inner border border-cyan-100">
                 <ShieldCheck size={40} />
               </div>
               <h2 className="text-2xl font-black text-slate-900">ADMIN LOGIN</h2>
@@ -481,7 +499,7 @@ export default function App() {
                 className="w-full border-2 border-slate-100 rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-center text-xl tracking-widest"
                 autoFocus
               />
-              <button type="submit" className="w-full bg-slate-900 text-white font-black rounded-2xl py-4 hover:bg-slate-800 transition shadow-lg">XÁC NHẬN</button>
+              <button type="submit" className="w-full bg-slate-900 text-white font-black rounded-2xl py-4 hover:bg-slate-800 transition shadow-lg uppercase tracking-widest">Xác nhận</button>
             </form>
           </div>
         </div>
@@ -492,17 +510,18 @@ export default function App() {
         <div className="fixed inset-0 bg-slate-950/98 z-[200] flex flex-col items-center justify-center p-4 md:p-12 backdrop-blur-2xl animate-in fade-in duration-500">
           <div className="w-full max-w-7xl flex justify-between items-center mb-6">
             <h3 className="text-cyan-400 font-tech font-black text-2xl flex items-center uppercase tracking-tighter">
-              <Youtube className="text-red-500 mr-4" size={32} /> {playingPlaylist.title}
+              <Youtube className="text-red-500 mr-4 shadow-[0_0_15px_rgba(239,68,68,0.5)]" size={32} /> {playingPlaylist.title}
             </h3>
-            <button onClick={() => setPlayingPlaylist(null)} className="p-4 bg-white/5 hover:bg-red-600 rounded-full text-white transition-all border border-white/10"><X size={32} /></button>
+            <button onClick={() => setPlayingPlaylist(null)} className="p-4 bg-white/5 hover:bg-red-600 rounded-full text-white transition-all border border-white/10 hover:scale-110"><X size={32} /></button>
           </div>
-          <div className="w-full max-w-7xl aspect-video rounded-[3rem] shadow-[0_0_100px_rgba(6,182,212,0.1)] bg-black overflow-hidden border border-white/10 relative z-10 animate-in zoom-in-95">
+          <div className="w-full max-w-7xl aspect-video rounded-[3rem] shadow-[0_0_100px_rgba(6,182,212,0.15)] bg-black overflow-hidden border border-white/10 relative z-10 animate-in zoom-in-95">
             <iframe 
               className="w-full h-full"
               src={`https://www.youtube.com/embed/videoseries?list=${playingPlaylist.id}&rel=0`}
               frameBorder="0" allowFullScreen
             ></iframe>
           </div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-cyan-500/10 blur-[150px] rounded-full pointer-events-none"></div>
         </div>
       )}
 
@@ -511,39 +530,41 @@ export default function App() {
         <div className="fixed inset-0 bg-slate-950/80 z-[100] flex items-center justify-center p-4 backdrop-blur-md">
           <div className="bg-white rounded-[2.5rem] w-full max-w-2xl max-h-[90vh] overflow-y-auto p-8 shadow-2xl relative">
             <div className="flex justify-between items-center mb-8">
-              <h2 className="text-3xl font-black text-slate-800">{editingId ? 'Cập Nhật App' : 'Thêm App Mới'}</h2>
-              <button onClick={() => setShowForm(false)} className="p-2 bg-slate-100 rounded-full text-slate-500"><X size={24} /></button>
+              <h2 className="text-3xl font-black text-slate-800 tracking-tight">{editingId ? 'Cập Nhật App' : 'Thêm App Mới'}</h2>
+              <button onClick={() => setShowForm(false)} className="p-2 bg-slate-100 rounded-full text-slate-500 hover:text-red-500 transition-colors"><X size={24} /></button>
             </div>
             
             <form onSubmit={handleSaveApp} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-black text-slate-400 uppercase mb-2">Tên hiển thị</label>
-                  <input type="text" required value={formData.name} onChange={(e)=>setFormData({...formData, name:e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-cyan-500" />
+                  <label className="block text-xs font-black text-slate-400 uppercase mb-2 ml-1">Tên hiển thị</label>
+                  <input type="text" required value={formData.name} onChange={(e)=>setFormData({...formData, name:e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-cyan-500 focus:bg-white transition-all" />
                 </div>
                 <div>
-                  <label className="block text-xs font-black text-slate-400 uppercase mb-2">Ngày phát hành</label>
-                  <input type="date" required value={formData.releaseDate} onChange={(e)=>setFormData({...formData, releaseDate:e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-cyan-500" />
+                  <label className="block text-xs font-black text-slate-400 uppercase mb-2 ml-1">Ngày phát hành</label>
+                  <input type="date" required value={formData.releaseDate} onChange={(e)=>setFormData({...formData, releaseDate:e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-cyan-500 focus:bg-white transition-all" />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-black text-slate-400 uppercase mb-2">Mô tả tóm tắt</label>
-                <textarea rows="3" required value={formData.description} onChange={(e)=>setFormData({...formData, description:e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-cyan-500 resize-none"></textarea>
+                <label className="block text-xs font-black text-slate-400 uppercase mb-2 ml-1">Mô tả tóm tắt</label>
+                <textarea rows="3" required value={formData.description} onChange={(e)=>setFormData({...formData, description:e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-cyan-500 focus:bg-white transition-all resize-none"></textarea>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs font-black text-slate-400 uppercase mb-2">Danh mục</label>
-                  <select value={formData.category} onChange={(e)=>setFormData({...formData, category:e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-cyan-500">
+                  <label className="block text-xs font-black text-slate-400 uppercase mb-2 ml-1">Danh mục</label>
+                  <select value={formData.category} onChange={(e)=>setFormData({...formData, category:e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-cyan-500 focus:bg-white transition-all">
                     {dbCategories.map(cat => <option key={cat.id} value={cat.name}>{cat.name}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-black text-slate-400 uppercase mb-2">Link tải / truy cập</label>
-                  <input type="url" required value={formData.link} onChange={(e)=>setFormData({...formData, link:e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-cyan-500" />
+                  <label className="block text-xs font-black text-slate-400 uppercase mb-2 ml-1">Link tải / truy cập</label>
+                  <input type="url" required value={formData.link} onChange={(e)=>setFormData({...formData, link:e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-cyan-500 focus:bg-white transition-all" />
                 </div>
               </div>
               <div className="bg-cyan-50 p-6 rounded-3xl border border-cyan-100">
-                <label className="block text-xs font-black text-cyan-700 uppercase mb-3">Link icon (Google Drive/URL)</label>
+                <label className="block text-xs font-black text-cyan-700 uppercase mb-3 ml-1 flex items-center">
+                  <LinkIcon size={14} className="mr-2" /> Link icon (Google Drive/URL)
+                </label>
                 <input 
                   type="url" required value={formData.iconUrl} 
                   onChange={(e) => {
@@ -552,11 +573,11 @@ export default function App() {
                     if (match) val = `https://lh3.googleusercontent.com/d/${match[1]}`;
                     setFormData({...formData, iconUrl: val});
                   }}
-                  className="w-full bg-white border border-cyan-200 rounded-xl px-4 py-3 text-sm" 
+                  className="w-full bg-white border border-cyan-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-cyan-500" 
                 />
               </div>
-              <button disabled={isUploading} type="submit" className="w-full bg-cyan-600 text-white font-black rounded-3xl py-5 hover:bg-cyan-700 transition shadow-xl disabled:opacity-50 uppercase tracking-widest">
-                {isUploading ? 'ĐANG LƯU...' : 'HOÀN TẤT LƯU ỨNG DỤNG'}
+              <button disabled={isUploading} type="submit" className="w-full bg-cyan-600 text-white font-black rounded-3xl py-5 hover:bg-cyan-700 transition shadow-xl disabled:opacity-50 uppercase tracking-widest text-lg">
+                {isUploading ? 'ĐANG LƯU DỮ LIỆU...' : 'HOÀN TẤT LƯU ỨNG DỤNG'}
               </button>
             </form>
           </div>
@@ -566,21 +587,21 @@ export default function App() {
       {/* Category Manager Modal */}
       {showCatManager && (
         <div className="fixed inset-0 bg-slate-950/80 z-[110] flex items-center justify-center p-4 backdrop-blur-md">
-          <div className="bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl relative">
+          <div className="bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl relative animate-in zoom-in duration-300">
             <h2 className="text-2xl font-black text-slate-800 mb-6 uppercase tracking-tighter">Quản lý danh mục</h2>
             <form onSubmit={handleAddCategory} className="flex gap-2 mb-6">
-              <input type="text" value={newCatName} onChange={(e)=>setNewCatName(e.target.value)} placeholder="Tên danh mục..." className="flex-1 bg-slate-50 border rounded-xl px-4 py-2" required />
-              <button type="submit" className="bg-cyan-600 text-white px-6 rounded-xl font-bold">THÊM</button>
+              <input type="text" value={newCatName} onChange={(e)=>setNewCatName(e.target.value)} placeholder="Tên danh mục..." className="flex-1 bg-slate-50 border rounded-xl px-4 py-2 focus:ring-2 focus:ring-cyan-500" required />
+              <button type="submit" className="bg-cyan-600 text-white px-6 rounded-xl font-bold hover:bg-cyan-700 transition">THÊM</button>
             </form>
-            <div className="space-y-2 max-h-60 overflow-y-auto">
+            <div className="space-y-2 max-h-60 overflow-y-auto pr-2 no-scrollbar">
               {dbCategories.map(cat => (
-                <div key={cat.id} className="flex justify-between items-center p-4 bg-slate-50 rounded-xl">
+                <div key={cat.id} className="flex justify-between items-center p-4 bg-slate-50 rounded-xl border border-slate-100 hover:border-cyan-200 transition-colors">
                   <span className="font-bold text-slate-700">{cat.name}</span>
-                  <button onClick={() => handleDeleteCategory(cat.id, cat.name)} className="text-red-400 hover:text-red-600"><Trash2 size={18} /></button>
+                  <button onClick={() => handleDeleteCategory(cat.id, cat.name)} className="text-gray-400 hover:text-red-600 transition-colors p-1"><Trash2 size={18} /></button>
                 </div>
               ))}
             </div>
-            <button onClick={()=>setShowCatManager(false)} className="w-full mt-6 py-3 bg-slate-100 text-slate-600 rounded-xl font-bold">ĐÓNG</button>
+            <button onClick={()=>setShowCatManager(false)} className="w-full mt-6 py-4 bg-slate-100 text-slate-600 rounded-2xl font-bold hover:bg-slate-200 transition-colors uppercase tracking-widest">Đóng bảng</button>
           </div>
         </div>
       )}
@@ -589,7 +610,7 @@ export default function App() {
       {confirmDialog && (
         <div className="fixed inset-0 bg-slate-950/90 z-[300] flex items-center justify-center p-6 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-[2rem] w-full max-w-sm p-8 shadow-2xl border-2 border-slate-100">
-             <h3 className="text-2xl font-black text-slate-900 mb-4">{confirmDialog.title}</h3>
+             <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight">{confirmDialog.title}</h3>
              <p className="text-slate-500 mb-8 leading-relaxed">{confirmDialog.message}</p>
              <div className="flex gap-4">
                <button onClick={() => setConfirmDialog(null)} className="flex-1 py-4 bg-slate-100 text-slate-700 font-bold rounded-2xl hover:bg-slate-200 transition">HỦY</button>
