@@ -294,64 +294,64 @@ export default function App() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-cyan-500 selection:text-white">
-      {/* Container Wrapper for Desktop Optimization */}
-      <div className="max-w-screen-2xl mx-auto bg-white min-h-screen shadow-2xl overflow-hidden relative border-x border-slate-100">
+    <div className="min-h-screen bg-slate-100 text-slate-800 font-sans selection:bg-cyan-500 selection:text-white">
+      <div className="max-w-6xl mx-auto bg-white min-h-screen shadow-2xl sm:rounded-b-3xl overflow-hidden relative border-x border-slate-100">
         
-        {/* Header - Optimized for wide screens */}
-        <div className="bg-slate-900 relative px-6 md:px-12 pt-10 pb-8 text-white sticky top-0 z-40 shadow-xl border-b border-cyan-500/20">
-          <div className="absolute inset-0 opacity-10 grid-pattern"></div>
+        {/* Header - Optimized for standard desktop */}
+        <div className="bg-slate-900 relative px-5 pt-8 pb-6 text-white sticky top-0 z-40 shadow-[0_10px_30px_-10px_rgba(6,182,212,0.4)] border-b border-cyan-500/30">
+          <div className="absolute inset-0 opacity-20 grid-pattern pointer-events-none"></div>
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-cyan-500/10 to-transparent pointer-events-none"></div>
           
-          <div className="flex flex-col lg:flex-row justify-between items-center gap-6 relative z-10">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-5 relative z-10">
             <div className="flex items-center group cursor-pointer">
               <img 
                 src="https://lh3.googleusercontent.com/d/1RjUhWb2asNqhetIBybpZJ8EVCqYQDdo5" 
                 alt="Logo" 
-                className="w-12 h-12 md:w-16 md:h-16 mr-4 object-contain drop-shadow-[0_0_15px_rgba(34,211,238,0.6)] group-hover:scale-110 transition-transform"
+                className="w-10 h-10 md:w-12 md:h-12 mr-3 object-contain drop-shadow-[0_0_15px_rgba(34,211,238,0.8)] group-hover:scale-110 transition-transform duration-300"
               />
-              <h1 className="text-3xl md:text-5xl font-black tracking-tighter font-tech uppercase text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-                Hoàng<span className="text-white ml-1 font-light tracking-normal opacity-90 uppercase">Appstore</span>
+              <h1 className="text-3xl md:text-4xl font-black tracking-widest font-tech uppercase text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)] flex items-center">
+                Hoàng<span className="text-cyan-50 ml-2 font-light tracking-normal">Appstore</span>
               </h1>
             </div>
 
-            <div className="relative flex-1 w-full max-w-2xl group">
-              <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-cyan-600 group-focus-within:text-cyan-400" size={22} />
+            <div className="relative flex-1 w-full md:max-w-md lg:max-w-xl group">
+              <Search className="absolute left-4 top-3.5 text-cyan-500 group-focus-within:text-cyan-300 transition-colors" size={20} />
               <input 
                 type="text" 
-                placeholder="Tìm kiếm ứng dụng, game, tính năng..." 
+                placeholder="Tìm kiếm ứng dụng, game..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-950/40 text-white placeholder-slate-500 border border-white/10 rounded-2xl py-4 pl-14 pr-6 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:bg-slate-800/80 transition-all shadow-inner"
+                className="w-full bg-slate-950/50 text-cyan-50 placeholder-cyan-700/70 border border-cyan-500/30 rounded-2xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:bg-slate-900 transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
               />
             </div>
 
-            <div className="hidden lg:flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-4">
               {isAdmin ? (
-                <button onClick={() => setIsAdmin(false)} className="px-6 py-3 bg-slate-800 border border-red-500/30 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition-all flex items-center font-bold">
-                  <LogOut size={20} className="mr-2" /> Thoát Admin
+                <button onClick={() => setIsAdmin(false)} className="p-3 bg-slate-800 border border-cyan-500/30 text-cyan-400 rounded-full hover:bg-slate-700 hover:shadow-[0_0_15px_rgba(34,211,238,0.5)] transition flex items-center shadow-lg" title="Thoát Admin">
+                  <LogOut size={22} />
                 </button>
               ) : (
-                <button onClick={() => setShowLogin(true)} className="p-3 bg-slate-800 text-cyan-400 border border-cyan-500/20 rounded-full hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-all">
-                  <UserCircle size={32} />
+                <button onClick={() => setShowLogin(true)} className="p-3 text-cyan-400 hover:bg-slate-800 hover:shadow-[0_0_15px_rgba(34,211,238,0.3)] border border-transparent hover:border-cyan-500/30 rounded-full transition flex items-center" title="Đăng nhập Quản trị">
+                  <UserCircle size={26} />
                 </button>
               )}
             </div>
           </div>
 
-          {/* View Toggle - Pill Style */}
-          <div className="flex justify-center mt-8 relative z-10">
-            <div className="bg-slate-950/40 p-1.5 rounded-2xl border border-white/5 flex backdrop-blur-md">
+          {/* View Toggle */}
+          <div className="flex justify-center mt-6 relative z-10">
+            <div className="bg-slate-950/60 p-1.5 rounded-full border border-cyan-500/30 flex shadow-inner backdrop-blur-sm">
               <button
                 onClick={() => setActiveView('apps')}
-                className={`px-8 py-2.5 rounded-xl font-bold text-sm flex items-center transition-all ${activeView === 'apps' ? 'bg-cyan-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                className={`px-6 py-2 rounded-full font-bold text-sm flex items-center transition-all duration-300 ${activeView === 'apps' ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-[0_0_15px_rgba(6,182,212,0.4)]' : 'text-cyan-600 hover:text-cyan-300'}`}
               >
-                <AppWindow size={18} className="mr-2" /> KHO ỨNG DỤNG
+                <AppWindow size={18} className="mr-2" /> Kho Ứng Dụng
               </button>
               <button
                 onClick={() => setActiveView('videos')}
-                className={`px-8 py-2.5 rounded-xl font-bold text-sm flex items-center transition-all ${activeView === 'videos' ? 'bg-cyan-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
+                className={`px-6 py-2 rounded-full font-bold text-sm flex items-center transition-all duration-300 ${activeView === 'videos' ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-[0_0_15px_rgba(6,182,212,0.4)]' : 'text-cyan-600 hover:text-cyan-300'}`}
               >
-                <Youtube size={18} className="mr-2" /> VIDEO AI
+                <Youtube size={18} className="mr-2" /> Video AI
               </button>
             </div>
           </div>
@@ -360,12 +360,12 @@ export default function App() {
         {/* Content Area */}
         {activeView === 'apps' ? (
           <div className="pb-24">
-            <div className="px-6 md:px-12 py-6 overflow-x-auto no-scrollbar bg-slate-50/50 flex gap-3 border-b border-slate-100">
+            <div className="px-5 py-4 overflow-x-auto no-scrollbar bg-slate-50 flex gap-2 border-b border-slate-200">
               {displayCategories.map(cat => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`whitespace-nowrap px-6 py-2.5 rounded-full text-sm font-bold transition-all border ${activeCategory === cat ? 'bg-slate-900 text-white border-slate-900 shadow-md scale-105' : 'bg-white text-slate-500 border-slate-200 hover:border-cyan-300'}`}
+                  className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-bold transition-all ${activeCategory === cat ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-[0_0_10px_rgba(6,182,212,0.4)] border border-cyan-400/50 scale-105' : 'bg-white text-slate-500 border border-slate-200 hover:border-cyan-300 hover:text-cyan-600 shadow-sm'}`}
                 >
                   {cat}
                 </button>
@@ -373,42 +373,43 @@ export default function App() {
             </div>
 
             {isAdmin && (
-              <div className="mx-6 md:mx-12 my-6 bg-slate-900 rounded-2xl p-5 flex flex-col md:flex-row justify-between items-center gap-4 border border-cyan-500/20">
-                <div className="flex items-center text-cyan-400 font-bold uppercase tracking-widest">
-                  <ShieldCheck size={24} className="mr-3 text-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.5)]" /> QUẢN TRỊ VIÊN
+              <div className="mx-5 my-5 bg-slate-900 rounded-xl p-4 flex flex-col md:flex-row justify-between items-center gap-4 border border-cyan-500/30 shadow-lg relative overflow-hidden">
+                <div className="absolute inset-0 opacity-10 pointer-events-none grid-pattern"></div>
+                <div className="flex items-center text-cyan-400 font-bold uppercase tracking-widest text-sm relative z-10">
+                  <ShieldCheck size={20} className="mr-2 text-cyan-300 drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]" /> BẢNG ĐIỀU KHIỂN
                 </div>
-                <div className="flex gap-4 w-full md:w-auto">
-                  <button onClick={() => setShowCatManager(true)} className="flex-1 md:flex-none px-6 py-2.5 bg-slate-800 text-cyan-300 rounded-xl hover:bg-slate-700 font-bold text-sm">Danh mục</button>
-                  <button onClick={() => handleOpenForm()} className="flex-1 md:flex-none px-6 py-2.5 bg-cyan-600 text-white rounded-xl hover:bg-cyan-500 font-bold text-sm shadow-lg shadow-cyan-900/20">Thêm ứng dụng</button>
+                <div className="flex gap-3 relative z-10 w-full md:w-auto">
+                  <button onClick={() => setShowCatManager(true)} className="flex-1 md:flex-none px-4 py-2 bg-slate-800 text-cyan-300 rounded-lg hover:bg-slate-700 font-bold text-sm border border-cyan-500/50 transition"><Tags size={16} className="inline mr-2"/>Danh mục</button>
+                  <button onClick={() => handleOpenForm()} className="flex-1 md:flex-none px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg hover:from-cyan-400 hover:to-blue-500 font-bold text-sm shadow-[0_0_10px_rgba(6,182,212,0.4)] border border-cyan-400/50 transition"><Plus size={16} className="inline mr-1.5 font-bold"/>Thêm App</button>
                 </div>
               </div>
             )}
 
-            <div className="px-6 md:px-12 mt-8">
+            <div className="px-5 mt-6">
               {loading ? (
-                <div className="flex justify-center py-32"><Loader2 className="animate-spin text-cyan-600" size={48} /></div>
+                <div className="flex justify-center py-20"><Loader2 className="animate-spin text-cyan-600" size={32} /></div>
               ) : filteredApps.length === 0 ? (
                 <div className="text-center py-20 text-slate-400">
                   <LayoutGrid size={48} className="mx-auto mb-4 opacity-20 text-cyan-500" />
                   <p>Chưa có kết quả tìm kiếm phù hợp.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {filteredApps.map(app => (
-                    <div key={app.id} className="bg-white border border-gray-100 rounded-3xl p-4 shadow-sm hover:shadow-xl hover:border-cyan-200 transition-all group relative flex items-center h-full">
+                    <div key={app.id} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-cyan-200 transition-all group relative flex items-center h-full">
                       
-                      {/* Tooltip Pop-up (Neon Style) */}
+                      {/* Tooltip Pop-up */}
                       <div className="absolute z-50 bottom-full left-1/2 transform -translate-x-1/2 mb-4 w-72 pointer-events-none hidden group-hover:block">
                         <div className="animate-in fade-in zoom-in duration-200 origin-bottom">
-                          <div className="bg-slate-900/90 backdrop-blur-md border border-cyan-400/30 rounded-2xl p-4 shadow-[0_0_25px_rgba(34,211,238,0.3)] relative">
+                          <div className="bg-slate-900/90 backdrop-blur-md border border-cyan-400/30 rounded-xl p-4 shadow-[0_0_20px_rgba(34,211,238,0.3)] relative">
                             <p className="text-[13px] text-cyan-50 leading-relaxed font-medium">{app.description}</p>
-                            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-slate-900/90 border-b border-r border-cyan-400/30 rotate-45"></div>
+                            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-slate-900/90 border-b border-r border-cyan-400/30 rotate-45"></div>
                           </div>
                         </div>
                       </div>
 
                       <a href={app.link} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center min-w-0 pr-2">
-                        <div className="w-20 h-20 md:w-24 md:h-24 flex-shrink-0 bg-slate-50 rounded-2xl overflow-hidden border border-slate-100 shadow-inner group-hover:scale-105 transition-transform flex items-center justify-center mr-4">
+                        <div className="w-16 h-16 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shadow-inner group-hover:scale-105 transition-transform flex items-center justify-center mr-4">
                           <img 
                             src={app.iconUrl} 
                             alt={app.name} 
@@ -417,16 +418,16 @@ export default function App() {
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-black text-slate-800 text-lg md:text-xl truncate leading-tight mb-1">{app.name}</h3>
-                          <p className="text-sm text-slate-500 line-clamp-2 h-10 leading-snug mb-2">{app.description}</p>
+                          <h3 className="font-bold text-gray-900 text-lg truncate leading-tight mb-1">{app.name}</h3>
+                          <p className="text-sm text-gray-500 line-clamp-2 leading-snug mb-2">{app.description}</p>
                           
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-lg uppercase tracking-tighter flex items-center border border-blue-100">
+                            <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md flex items-center border border-blue-100">
                               {getCategoryIcon(app.category)}
                               {app.category}
                             </span>
                             {app.releaseDate && (
-                              <span className="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-100">
+                              <span className="text-xs font-medium text-slate-500 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200">
                                 {new Date(app.releaseDate).toLocaleDateString('vi-VN')}
                               </span>
                             )}
@@ -435,9 +436,9 @@ export default function App() {
                       </a>
 
                       {isAdmin && (
-                        <div className="flex flex-col gap-2 ml-2 border-l border-slate-100 pl-3">
-                          <button onClick={() => handleOpenForm(app)} className="p-2 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors"><Edit size={18} /></button>
-                          <button onClick={() => handleDeleteApp(app.id, app.name)} className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={18} /></button>
+                        <div className="flex flex-col gap-2 ml-2 border-l border-slate-100 pl-2">
+                          <button onClick={() => handleOpenForm(app)} className="p-1.5 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-md transition-colors"><Edit size={16} /></button>
+                          <button onClick={() => handleDeleteApp(app.id, app.name)} className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors"><Trash2 size={16} /></button>
                         </div>
                       )}
                     </div>
@@ -447,30 +448,32 @@ export default function App() {
             </div>
           </div>
         ) : (
-          <div className="px-6 md:px-12 py-12 pb-32">
-            <div className="max-w-screen-xl mx-auto">
-              <div className="flex items-center mb-10">
-                <Youtube className="text-red-600 mr-4" size={40} />
-                <h2 className="text-3xl font-tech font-black uppercase text-slate-800 tracking-tighter">AI Multimedia Studio</h2>
+          <div className="px-5 py-8 pb-24">
+            <div className="max-w-5xl mx-auto">
+              <div className="flex items-center mb-8">
+                <Youtube className="text-red-500 mr-3 drop-shadow-md" size={32} />
+                <h2 className="text-2xl font-black text-slate-800 font-tech uppercase tracking-wider">Danh Sách Phát AI</h2>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {AI_PLAYLISTS.map((pl) => (
                   <div 
                     key={pl.id}
                     onClick={() => setPlayingPlaylist(pl)}
-                    className="bg-white rounded-[2rem] p-5 shadow-sm border border-slate-100 cursor-pointer group hover:shadow-2xl hover:border-cyan-300 transition-all duration-500 transform hover:-translate-y-2"
+                    className="bg-white rounded-3xl p-4 shadow-xl border border-slate-100 cursor-pointer group hover:shadow-cyan-500/30 hover:border-cyan-400/50 transition-all duration-300 transform hover:-translate-y-1 block"
                   >
-                    <div className="relative aspect-video rounded-3xl overflow-hidden mb-6 bg-slate-900">
-                      <img src={pl.thumbnail} alt={pl.title} className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-700" />
-                      <div className="absolute inset-0 flex items-center justify-center bg-slate-900/20 group-hover:bg-transparent transition-colors">
-                        <div className="w-20 h-20 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/20 group-hover:scale-110 group-hover:bg-cyan-500 transition-all duration-300">
-                          <Youtube size={40} className="text-white fill-red-600" />
+                    <div className="relative aspect-video rounded-2xl overflow-hidden mb-5 bg-slate-900 shadow-inner">
+                      <img src={pl.thumbnail} alt={pl.title} className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" />
+                      <div className="absolute inset-0 flex items-center justify-center bg-slate-900/30 group-hover:bg-transparent transition-colors duration-300">
+                        <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-white/40 shadow-[0_0_20px_rgba(255,255,255,0.4)]">
+                          <Play size={32} className="text-white fill-white ml-1" />
                         </div>
                       </div>
                     </div>
-                    <h3 className="text-2xl font-black text-slate-800 mb-2">{pl.title}</h3>
-                    <p className="text-slate-500 leading-relaxed text-sm">{pl.description}</p>
+                    <div className="px-2">
+                      <h3 className="text-xl font-bold text-slate-800 group-hover:text-cyan-600 transition-colors mb-1">{pl.title}</h3>
+                      <p className="text-slate-500 text-sm leading-relaxed">{pl.description}</p>
+                    </div>
                   </div>
                 ))}
               </div>
