@@ -294,12 +294,12 @@ export default function App() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-800 font-sans selection:bg-cyan-500 selection:text-white">
-      {/* Container: Full Width để trải đều màn hình */}
-      <div className="w-full bg-white min-h-screen shadow-2xl overflow-hidden relative border-x border-slate-100">
+    <div className="min-h-screen bg-slate-100 text-slate-800 font-sans selection:bg-cyan-500 selection:text-white flex flex-col items-center">
+      {/* Container mở rộng cho Desktop (max 1600px, 96% màn hình) nhưng không làm hỏng Tooltip */}
+      <div className="max-w-[1600px] w-full xl:w-[96%] bg-white min-h-screen shadow-2xl sm:rounded-b-3xl relative border-x border-slate-100 flex flex-col">
         
         {/* Header */}
-        <div className="bg-slate-900 relative px-5 md:px-8 lg:px-12 pt-8 pb-6 text-white sticky top-0 z-40 shadow-[0_10px_30px_-10px_rgba(6,182,212,0.4)] border-b border-cyan-500/30">
+        <div className="bg-slate-900 relative px-5 md:px-8 lg:px-12 pt-8 pb-6 text-white sticky top-0 z-40 shadow-[0_10px_30px_-10px_rgba(6,182,212,0.4)] border-b border-cyan-500/30 sm:rounded-t-none">
           <div className="absolute inset-0 opacity-20 grid-pattern pointer-events-none"></div>
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-cyan-500/10 to-transparent pointer-events-none"></div>
           
@@ -395,9 +395,10 @@ export default function App() {
                   <p>Chưa có kết quả tìm kiếm phù hợp.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4 lg:gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 lg:gap-6">
                   {filteredApps.map(app => (
-                    <div key={app.id} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-lg hover:border-cyan-300 transition-all group relative flex items-center h-full w-full overflow-hidden">
+                    // BỎ overflow-hidden ở thẻ div này để Tooltip không bị cắt mất
+                    <div key={app.id} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-lg hover:border-cyan-300 transition-all group relative flex items-center h-full">
                       
                       {/* Tooltip Pop-up */}
                       <div className="absolute z-50 bottom-full left-1/2 transform -translate-x-1/2 mb-4 w-72 pointer-events-none hidden group-hover:block">
@@ -409,7 +410,7 @@ export default function App() {
                         </div>
                       </div>
 
-                      <a href={app.link} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center min-w-0 w-full pr-2">
+                      <a href={app.link} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center min-w-0 pr-2">
                         <div className="w-16 h-16 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shadow-inner group-hover:scale-105 transition-transform flex items-center justify-center mr-4">
                           <img 
                             src={app.iconUrl} 
@@ -418,14 +419,15 @@ export default function App() {
                             onError={(e) => { e.target.src = 'https://via.placeholder.com/150?text=App'; }}
                           />
                         </div>
-                        <div className="flex-1 min-w-0 overflow-hidden">
-                          <h3 className="font-bold text-gray-900 text-base lg:text-lg truncate leading-tight mb-1 w-full">{app.name}</h3>
-                          <p className="text-sm text-gray-500 truncate leading-snug mb-2 w-full">{app.description}</p>
+                        {/* Cấu trúc min-w-0 để đảm bảo chữ truncate chính xác mà không phá vỡ lưới */}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-gray-900 text-base lg:text-lg truncate mb-1">{app.name}</h3>
+                          <p className="text-sm text-gray-500 truncate mb-2">{app.description}</p>
                           
-                          <div className="flex items-center gap-2 w-full overflow-hidden">
-                            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md flex items-center border border-blue-100 flex-shrink-0">
+                          <div className="flex items-center gap-2 overflow-hidden">
+                            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md flex items-center border border-blue-100 max-w-[120px] truncate flex-shrink-0">
                               {getCategoryIcon(app.category)}
-                              <span className="truncate max-w-[80px]">{app.category}</span>
+                              <span className="truncate">{app.category}</span>
                             </span>
                             {app.releaseDate && (
                               <span className="text-[10px] font-bold text-slate-500 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200 flex-shrink-0">
@@ -437,7 +439,7 @@ export default function App() {
                       </a>
 
                       {isAdmin && (
-                        <div className="flex flex-col gap-2 ml-2 border-l border-slate-100 pl-2 flex-shrink-0">
+                        <div className="flex flex-col gap-2 ml-2 border-l border-slate-100 pl-3 flex-shrink-0">
                           <button onClick={() => handleOpenForm(app)} className="p-1.5 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-md transition-colors"><Edit size={16} /></button>
                           <button onClick={() => handleDeleteApp(app.id, app.name)} className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors"><Trash2 size={16} /></button>
                         </div>
