@@ -573,7 +573,8 @@ export default function App() {
         {/* CHÂN TRANG & BẢN QUYỀN */}
         <footer className="mt-auto border-t border-slate-200 bg-slate-50 py-8 w-full flex flex-col items-center justify-center relative z-10">
           <div className="flex flex-col items-center justify-center gap-3">
-            <p className="text-slate-600 text-sm font-bold tracking-wide uppercase font-tech">
+            {/* THAY ĐỔI: Giảm cỡ chữ xuống text-xs */}
+            <p className="text-slate-600 text-xs font-bold tracking-wide uppercase font-tech">
               Copyright © Nguyễn Xuân Hoàng 2026
             </p>
             <div className="flex items-center gap-2 text-xs text-slate-500 bg-white px-4 py-2 rounded-full border border-slate-200 shadow-sm transition-all hover:shadow-md hover:border-cyan-200 cursor-default">
