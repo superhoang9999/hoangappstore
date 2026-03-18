@@ -43,6 +43,9 @@ const db = app ? getFirestore(app) : null;
 
 const ADMIN_PASSWORD = '0912411451';
 
+// Hình ảnh dự phòng khi link bị hỏng hoặc không tải được (Base64 SVG)
+const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 24 24' fill='none' stroke='%23cbd5e1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='4' ry='4'/%3E%3Ccircle cx='8.5' cy='8.5' r='1.5'/%3E%3Cpolyline points='21 15 16 10 5 21'/%3E%3C/svg%3E";
+
 // Danh sách các Playlist YouTube
 const AI_PLAYLISTS = [
   {
@@ -319,13 +322,14 @@ export default function App() {
 
             {/* Thanh tìm kiếm có max-width để trông cân đối */}
             <div className="relative w-full max-w-full md:max-w-xl lg:max-w-2xl xl:max-w-3xl group mx-auto">
-              <Search className="absolute left-4 top-3.5 text-cyan-500 group-focus-within:text-cyan-300 transition-colors" size={20} />
+              <Search className="absolute left-4 top-3.5 text-cyan-400 group-focus-within:text-cyan-300 transition-colors" size={20} />
               <input 
                 type="text" 
                 placeholder="Tìm kiếm ứng dụng, game..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-950/50 text-cyan-50 placeholder-cyan-700/70 border border-cyan-500/30 rounded-2xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:bg-slate-900 transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
+                /* THAY ĐỔI: Tăng sáng placeholder thành cyan-300/80 và chữ gõ thành màu trắng tinh (text-white) */
+                className="w-full bg-slate-900/60 text-white placeholder-cyan-300/80 border border-cyan-500/50 rounded-2xl py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-cyan-400/80 focus:bg-slate-800 transition-all duration-300 shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
               />
             </div>
 
@@ -417,10 +421,10 @@ export default function App() {
                         {/* Icon */}
                         <a href={app.link} target="_blank" rel="noopener noreferrer" className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shadow-inner group-hover:scale-105 transition-transform block">
                           <img 
-                            src={app.iconUrl} 
+                            src={app.iconUrl || FALLBACK_IMAGE} 
                             alt={app.name} 
                             className="w-full h-full object-cover" 
-                            onError={(e) => { e.target.src = 'https://via.placeholder.com/150?text=App'; }}
+                            onError={(e) => { e.target.onerror = null; e.target.src = FALLBACK_IMAGE; }}
                           />
                         </a>
 
@@ -476,7 +480,12 @@ export default function App() {
                     className="bg-white rounded-3xl p-4 shadow-xl border border-slate-100 cursor-pointer group hover:shadow-cyan-500/30 hover:border-cyan-400/50 transition-all duration-300 transform hover:-translate-y-1 block"
                   >
                     <div className="relative aspect-video rounded-2xl overflow-hidden mb-5 bg-slate-900 shadow-inner">
-                      <img src={pl.thumbnail} alt={pl.title} className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" />
+                      <img 
+                        src={pl.thumbnail || FALLBACK_IMAGE} 
+                        alt={pl.title} 
+                        className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" 
+                        onError={(e) => { e.target.onerror = null; e.target.src = FALLBACK_IMAGE; }}
+                      />
                       <div className="absolute inset-0 flex items-center justify-center bg-slate-900/30 group-hover:bg-transparent transition-colors duration-300">
                         <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-white/40 shadow-[0_0_20px_rgba(255,255,255,0.4)]">
                           <Play size={32} className="text-white fill-white ml-1" />
@@ -513,10 +522,11 @@ export default function App() {
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
                 placeholder="Mật khẩu hệ thống" 
-                className="w-full border-2 border-slate-100 rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-center text-xl tracking-widest"
+                /* THAY ĐỔI: Đổi nền tối và chữ màu xanh neon sáng với hiệu ứng phát sáng (text-shadow) */
+                className="w-full bg-slate-900 border-2 border-cyan-500/50 text-cyan-400 [text-shadow:0_0_10px_rgba(34,211,238,0.8)] placeholder-slate-600 font-black rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:bg-slate-950 text-center text-2xl tracking-[0.3em] transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
                 autoFocus
               />
-              <button type="submit" className="w-full bg-slate-900 text-white font-black rounded-2xl py-4 hover:bg-slate-800 transition shadow-lg uppercase tracking-widest">Xác nhận</button>
+              <button type="submit" className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-black rounded-2xl py-4 hover:from-cyan-500 hover:to-blue-500 transition shadow-[0_0_15px_rgba(6,182,212,0.4)] uppercase tracking-widest text-lg">Xác nhận</button>
             </form>
           </div>
         </div>
@@ -578,20 +588,33 @@ export default function App() {
                   <input type="url" required value={formData.link} onChange={(e)=>setFormData({...formData, link:e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-cyan-500 focus:bg-white transition-all" />
                 </div>
               </div>
+              
               <div className="bg-cyan-50 p-6 rounded-3xl border border-cyan-100">
                 <label className="block text-xs font-black text-cyan-700 uppercase mb-3 ml-1 flex items-center">
                   <LinkIcon size={14} className="mr-2" /> Link icon (Google Drive/URL)
                 </label>
-                <input 
-                  type="url" required value={formData.iconUrl} 
-                  onChange={(e) => {
-                    let val = e.target.value;
-                    const match = val.match(/(?:drive\.google\.com\/file\/d\/|drive\.google\.com\/open\?id=)([-_A-Za-z0-9]+)/);
-                    if (match) val = `https://lh3.googleusercontent.com/d/${match[1]}`;
-                    setFormData({...formData, iconUrl: val});
-                  }}
-                  className="w-full bg-white border border-cyan-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-cyan-500" 
-                />
+                
+                <div className="flex gap-4 items-center">
+                  <div className="w-14 h-14 flex-shrink-0 bg-white rounded-xl border border-cyan-200 overflow-hidden shadow-sm flex items-center justify-center">
+                    <img 
+                      src={formData.iconUrl || FALLBACK_IMAGE} 
+                      alt="preview" 
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.target.onerror = null; e.target.src = FALLBACK_IMAGE; }}
+                    />
+                  </div>
+                  <input 
+                    type="url" required value={formData.iconUrl} 
+                    onChange={(e) => {
+                      let val = e.target.value;
+                      const match = val.match(/(?:drive\.google\.com\/file\/d\/|drive\.google\.com\/open\?id=)([-_A-Za-z0-9]+)/);
+                      if (match) val = `https://lh3.googleusercontent.com/d/${match[1]}`;
+                      setFormData({...formData, iconUrl: val});
+                    }}
+                    className="flex-1 bg-white border border-cyan-200 rounded-xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-cyan-500 transition-all" 
+                    placeholder="Dán link ảnh vào đây..."
+                  />
+                </div>
               </div>
               <button disabled={isUploading} type="submit" className="w-full bg-cyan-600 text-white font-black rounded-3xl py-5 hover:bg-cyan-700 transition shadow-xl disabled:opacity-50 uppercase tracking-widest text-lg">
                 {isUploading ? 'ĐANG LƯU DỮ LIỆU...' : 'HOÀN TẤT LƯU ỨNG DỤNG'}
