@@ -315,8 +315,9 @@ export default function App() {
                 alt="Logo" 
                 className="w-10 h-10 md:w-12 md:h-12 mr-3 object-contain drop-shadow-[0_0_15px_rgba(34,211,238,0.8)] group-hover:scale-110 transition-transform duration-300"
               />
-              <h1 className="text-2xl md:text-3xl font-black tracking-widest font-tech uppercase text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)] flex items-center">
-                Hoàng<span className="text-cyan-50 ml-2 font-light tracking-normal">Appstore</span>
+              {/* THAY ĐỔI: Thêm animate-title-glow, tinh chỉnh lại màu dải gradient để chữ phát sáng mượt mà */}
+              <h1 className="text-2xl md:text-3xl font-black tracking-widest font-tech uppercase text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 animate-title-glow drop-shadow-[0_0_15px_rgba(34,211,238,0.8)] flex items-center">
+                Hoàng<span className="text-cyan-50 ml-2 font-light tracking-normal drop-shadow-md">Appstore</span>
               </h1>
             </div>
 
@@ -404,19 +405,27 @@ export default function App() {
               ) : (
                 <div className="grid [grid-template-columns:repeat(auto-fill,minmax(280px,1fr))] gap-5 lg:gap-6 w-full">
                   {filteredApps.map(app => (
-                    <div key={app.id} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-lg hover:border-cyan-300 transition-all group relative w-full h-full block">
+                    /* THAY ĐỔI: Thêm hover:z-50 để toàn bộ thẻ nổi lên trên cùng khi rê chuột, chống che lấp tuyệt đối */
+                    <div key={app.id} className="group relative w-full h-full block rounded-2xl transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_10px_25px_-5px_rgba(6,182,212,0.3)] hover:z-50">
                       
-                      {/* Tooltip Pop-up */}
-                      <div className="absolute z-50 bottom-[105%] left-1/2 transform -translate-x-1/2 mb-2 w-72 pointer-events-none hidden group-hover:block">
+                      {/* 1. LỚP VIỀN NEON: Nằm dưới cùng, nhô ra ngoài 2px, có gradient đang quay */}
+                      <div className="absolute -inset-[2px] rounded-[18px] opacity-0 group-hover:opacity-100 overflow-hidden pointer-events-none z-0">
+                        <div className="absolute top-1/2 left-1/2 w-[200%] h-[200%] -translate-x-1/2 -translate-y-1/2 bg-[conic-gradient(transparent_75%,#06b6d4_100%)] animate-[spin_2s_linear_infinite]"></div>
+                      </div>
+
+                      {/* 2. TOOLTIP: Thay đổi nền tối (slate-900) đặc, chữ xanh neon phát sáng */}
+                      <div className="absolute z-50 bottom-[105%] left-1/2 transform -translate-x-1/2 mb-3 w-72 pointer-events-none hidden group-hover:block">
                         <div className="animate-in fade-in zoom-in duration-200 origin-bottom">
-                          <div className="bg-slate-900/95 backdrop-blur-md border border-cyan-400/30 rounded-xl p-4 shadow-2xl relative">
-                            <p className="text-[13px] text-cyan-50 leading-relaxed font-medium whitespace-pre-wrap">{app.description}</p>
-                            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-slate-900/95 border-b border-r border-cyan-400/30 rotate-45"></div>
+                          <div className="bg-slate-900 border border-cyan-500/50 rounded-xl p-4 shadow-[0_0_20px_rgba(6,182,212,0.6)] relative">
+                            {/* THAY ĐỔI: Bỏ font-bold, thay bằng font-normal để nét chữ thanh thoát, không bị đậm */}
+                            <p className="text-[13px] text-cyan-400 [text-shadow:0_0_8px_rgba(34,211,238,0.8)] leading-relaxed font-normal whitespace-pre-wrap">{app.description}</p>
+                            <div className="absolute -bottom-[9px] left-1/2 -translate-x-1/2 w-4 h-4 bg-slate-900 border-b border-r border-cyan-500/50 rotate-45"></div>
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center w-full h-full gap-3 sm:gap-4 min-w-0">
+                      {/* 3. NỘI DUNG THẺ: Cố định nền trắng, đè lên trên lớp viền (z-10) tạo ra khoảng trống ở giữa */}
+                      <div className="relative z-10 w-full h-full bg-white border border-gray-100 group-hover:border-transparent rounded-2xl p-4 flex items-center gap-3 sm:gap-4 min-w-0 transition-colors">
                         
                         {/* Icon */}
                         <a href={app.link} target="_blank" rel="noopener noreferrer" className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shadow-inner group-hover:scale-105 transition-transform block">
@@ -431,9 +440,7 @@ export default function App() {
                         {/* Text Container */}
                         <div className="flex-1 overflow-hidden">
                           <a href={app.link} target="_blank" rel="noopener noreferrer" className="block w-full">
-                            {/* THAY ĐỔI: Giảm size chữ tiêu đề ứng dụng xuống text-sm */}
                             <h3 className="font-bold text-gray-900 text-sm truncate w-full" title={app.name}>{app.name}</h3>
-                            {/* THAY ĐỔI: Giảm size chữ mô tả xuống text-xs */}
                             <p className="text-xs text-gray-500 line-clamp-2 leading-tight mt-1 min-h-[2rem] w-full">{app.description}</p>
                           </a>
                           
@@ -458,6 +465,7 @@ export default function App() {
                           </div>
                         )}
                       </div>
+
                     </div>
                   ))}
                 </div>
@@ -474,29 +482,35 @@ export default function App() {
               
               <div className="grid [grid-template-columns:repeat(auto-fill,minmax(350px,1fr))] gap-6 w-full">
                 {AI_PLAYLISTS.map((pl) => (
-                  <div 
-                    key={pl.id}
-                    onClick={() => setPlayingPlaylist(pl)}
-                    className="bg-white rounded-3xl p-4 shadow-xl border border-slate-100 cursor-pointer group hover:shadow-cyan-500/30 hover:border-cyan-400/50 transition-all duration-300 transform hover:-translate-y-1 block"
-                  >
-                    <div className="relative aspect-video rounded-2xl overflow-hidden mb-5 bg-slate-900 shadow-inner">
-                      <img 
-                        src={pl.thumbnail || FALLBACK_IMAGE} 
-                        alt={pl.title} 
-                        className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" 
-                        onError={(e) => { e.target.onerror = null; e.target.src = FALLBACK_IMAGE; }}
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center bg-slate-900/30 group-hover:bg-transparent transition-colors duration-300">
-                        <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-white/40 shadow-[0_0_20px_rgba(255,255,255,0.4)]">
-                          <Play size={32} className="text-white fill-white ml-1" />
+                  /* Áp dụng cấu trúc y hệt cho Video AI với viền Neon mỏng chạy vòng quanh */
+                  <div key={pl.id} onClick={() => setPlayingPlaylist(pl)} className="group relative block cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_10px_25px_-5px_rgba(239,68,68,0.3)] rounded-3xl">
+
+                    {/* Lớp viền neon màu đỏ */}
+                    <div className="absolute -inset-[2px] rounded-[26px] opacity-0 group-hover:opacity-100 overflow-hidden pointer-events-none z-0">
+                      <div className="absolute top-1/2 left-1/2 w-[200%] h-[200%] -translate-x-1/2 -translate-y-1/2 bg-[conic-gradient(transparent_75%,#ef4444_100%)] animate-[spin_2s_linear_infinite]"></div>
+                    </div>
+
+                    {/* Lớp nền trắng đè lên trên */}
+                    <div className="relative z-10 w-full h-full bg-white border border-slate-100 group-hover:border-transparent rounded-3xl p-4 transition-colors">
+                      <div className="relative aspect-video rounded-2xl overflow-hidden mb-5 bg-slate-900 shadow-inner">
+                        <img 
+                          src={pl.thumbnail || FALLBACK_IMAGE} 
+                          alt={pl.title} 
+                          className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" 
+                          onError={(e) => { e.target.onerror = null; e.target.src = FALLBACK_IMAGE; }}
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-slate-900/30 group-hover:bg-transparent transition-colors duration-300">
+                          <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-white/40 shadow-[0_0_20px_rgba(255,255,255,0.4)]">
+                            <Play size={32} className="text-white fill-white ml-1" />
+                          </div>
                         </div>
                       </div>
+                      <div className="px-2">
+                        <h3 className="text-base font-bold text-slate-800 group-hover:text-cyan-600 transition-colors mb-1">{pl.title}</h3>
+                        <p className="text-slate-500 text-xs leading-relaxed">{pl.description}</p>
+                      </div>
                     </div>
-                    <div className="px-2">
-                      {/* THAY ĐỔI: Thu nhỏ title cho video AI */}
-                      <h3 className="text-base font-bold text-slate-800 group-hover:text-cyan-600 transition-colors mb-1">{pl.title}</h3>
-                      <p className="text-slate-500 text-xs leading-relaxed">{pl.description}</p>
-                    </div>
+
                   </div>
                 ))}
               </div>
@@ -521,7 +535,7 @@ export default function App() {
                 type="password" 
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
-                placeholder="Mật khẩu hệ thống" 
+                placeholder="" 
                 /* THAY ĐỔI: Đổi nền tối và chữ màu xanh neon sáng với hiệu ứng phát sáng (text-shadow) */
                 className="w-full bg-slate-900 border-2 border-cyan-500/50 text-cyan-400 [text-shadow:0_0_10px_rgba(34,211,238,0.8)] placeholder-slate-600 font-black rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:bg-slate-950 text-center text-2xl tracking-[0.3em] transition-all shadow-[inset_0_2px_10px_rgba(0,0,0,0.5)]"
                 autoFocus
@@ -660,10 +674,21 @@ export default function App() {
         </div>
       )}
       
+      {/* Đã dọn dẹp sạch sẽ CSS thừa, chỉ giữ lại những gì thực sự cần thiết */}
       <style dangerouslySetInnerHTML={{__html: `
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
         
-        /* FIX QUAN TRỌNG: Ghi đè CSS mặc định của Vite để ép ứng dụng tràn viền 100% */
+        /* HIỆU ỨNG TEXT TIÊU ĐỀ */
+        @keyframes text-gradient-run {
+          0% { background-position: 0% 50%; }
+          100% { background-position: 200% 50%; }
+        }
+        .animate-title-glow {
+          background-size: 200% auto;
+          animation: text-gradient-run 4s linear infinite;
+        }
+
+        /* Ép ứng dụng tràn viền 100% */
         #root {
           max-width: 100% !important;
           width: 100% !important;
