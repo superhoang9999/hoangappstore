@@ -312,7 +312,7 @@ export default function App() {
                 alt="Logo" 
                 className="w-10 h-10 md:w-12 md:h-12 mr-3 object-contain drop-shadow-[0_0_15px_rgba(34,211,238,0.8)] group-hover:scale-110 transition-transform duration-300"
               />
-              <h1 className="text-3xl md:text-4xl font-black tracking-widest font-tech uppercase text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)] flex items-center">
+              <h1 className="text-2xl md:text-3xl font-black tracking-widest font-tech uppercase text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)] flex items-center">
                 Hoàng<span className="text-cyan-50 ml-2 font-light tracking-normal">Appstore</span>
               </h1>
             </div>
@@ -427,13 +427,13 @@ export default function App() {
                         {/* Text Container */}
                         <div className="flex-1 overflow-hidden">
                           <a href={app.link} target="_blank" rel="noopener noreferrer" className="block w-full">
-                            {/* THAY ĐỔI: Giảm size chữ xuống text-base (16px) thay vì text-lg */}
-                            <h3 className="font-bold text-gray-900 text-base truncate w-full" title={app.name}>{app.name}</h3>
-                            {/* THAY ĐỔI: Giảm size chữ mô tả xuống text-[13px] */}
-                            <p className="text-[13px] text-gray-500 line-clamp-2 leading-tight mt-1 min-h-[2.25rem] w-full">{app.description}</p>
+                            {/* THAY ĐỔI: Giảm size chữ tiêu đề ứng dụng xuống text-sm */}
+                            <h3 className="font-bold text-gray-900 text-sm truncate w-full" title={app.name}>{app.name}</h3>
+                            {/* THAY ĐỔI: Giảm size chữ mô tả xuống text-xs */}
+                            <p className="text-xs text-gray-500 line-clamp-2 leading-tight mt-1 min-h-[2rem] w-full">{app.description}</p>
                           </a>
                           
-                          <div className="flex flex-wrap items-center gap-2 mt-2 w-full overflow-hidden">
+                          <div className="flex flex-wrap items-center gap-2 mt-1 w-full overflow-hidden">
                             <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md flex items-center border border-blue-100 truncate">
                               {getCategoryIcon(app.category)}
                               <span className="truncate">{app.category}</span>
@@ -485,8 +485,8 @@ export default function App() {
                     </div>
                     <div className="px-2">
                       {/* THAY ĐỔI: Thu nhỏ title cho video AI */}
-                      <h3 className="text-lg font-bold text-slate-800 group-hover:text-cyan-600 transition-colors mb-1">{pl.title}</h3>
-                      <p className="text-slate-500 text-[13px] leading-relaxed">{pl.description}</p>
+                      <h3 className="text-base font-bold text-slate-800 group-hover:text-cyan-600 transition-colors mb-1">{pl.title}</h3>
+                      <p className="text-slate-500 text-xs leading-relaxed">{pl.description}</p>
                     </div>
                   </div>
                 ))}
@@ -639,6 +639,22 @@ export default function App() {
       
       <style dangerouslySetInnerHTML={{__html: `
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
+        
+        /* FIX QUAN TRỌNG: Ghi đè CSS mặc định của Vite để ép ứng dụng tràn viền 100% */
+        #root {
+          max-width: 100% !important;
+          width: 100% !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          text-align: left !important;
+        }
+        body {
+          margin: 0 !important;
+          padding: 0 !important;
+          width: 100% !important;
+          background-color: white !important;
+        }
+
         .font-tech { font-family: 'Orbitron', sans-serif; }
         .grid-pattern {
           background-size: 40px 40px;
