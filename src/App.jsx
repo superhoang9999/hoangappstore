@@ -295,8 +295,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-800 font-sans selection:bg-cyan-500 selection:text-white flex flex-col items-center">
-      {/* Khung giới hạn tối đa 1600px cho màn hình rộng */}
-      <div className="max-w-[1600px] w-full xl:w-[96%] bg-white min-h-screen shadow-2xl sm:rounded-b-3xl relative border-x border-slate-100 flex flex-col">
+      {/* Tối ưu chuẩn Desktop Full HD 1920x1080 với max-w-[1400px] */}
+      <div className="max-w-[1400px] w-full bg-white min-h-screen shadow-2xl sm:rounded-b-3xl relative border-x border-slate-100 flex flex-col">
         
         {/* Header */}
         <div className="bg-slate-900 relative px-5 md:px-8 lg:px-12 pt-8 pb-6 text-white sticky top-0 z-40 shadow-[0_10px_30px_-10px_rgba(6,182,212,0.4)] border-b border-cyan-500/30 sm:rounded-t-none">
@@ -395,62 +395,61 @@ export default function App() {
                   <p>Chưa có kết quả tìm kiếm phù hợp.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 lg:gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {filteredApps.map(app => (
-                    // TUYỆT ĐỐI KHÔNG thêm overflow-hidden vào thẻ này để Pop-up được bay ra ngoài
-                    <div key={app.id} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-lg hover:border-cyan-300 transition-all group relative flex items-center h-full">
+                    <div key={app.id} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-lg hover:border-cyan-300 transition-all group relative w-full h-full block">
                       
-                      {/* Tooltip Pop-up - Hiện ra khi rê chuột */}
-                      <div className="absolute z-50 bottom-full left-1/2 transform -translate-x-1/2 mb-4 w-72 pointer-events-none hidden group-hover:block">
+                      {/* Tooltip Pop-up */}
+                      <div className="absolute z-50 bottom-[105%] left-1/2 transform -translate-x-1/2 mb-2 w-72 pointer-events-none hidden group-hover:block">
                         <div className="animate-in fade-in zoom-in duration-200 origin-bottom">
-                          <div className="bg-slate-900/90 backdrop-blur-md border border-cyan-400/30 rounded-xl p-4 shadow-[0_0_20px_rgba(34,211,238,0.3)] relative">
-                            <p className="text-[13px] text-cyan-50 leading-relaxed font-medium">{app.description}</p>
-                            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3 h-3 bg-slate-900/90 border-b border-r border-cyan-400/30 rotate-45"></div>
+                          <div className="bg-slate-900/95 backdrop-blur-md border border-cyan-400/30 rounded-xl p-4 shadow-2xl relative">
+                            <p className="text-[13px] text-cyan-50 leading-relaxed font-medium whitespace-pre-wrap">{app.description}</p>
+                            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-slate-900/95 border-b border-r border-cyan-400/30 rotate-45"></div>
                           </div>
                         </div>
                       </div>
 
-                      {/* Flexbox an toàn chống vỡ chữ: dùng min-w-0 và không dùng w-full */}
-                      <a href={app.link} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center min-w-0 pr-2">
+                      {/* Sử dụng cấu trúc vững chắc để chống vỡ Text tuyệt đối */}
+                      <div className="flex items-center w-full h-full gap-4">
                         
-                        {/* Box Ảnh */}
-                        <div className="w-16 h-16 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shadow-inner group-hover:scale-105 transition-transform flex items-center justify-center mr-4">
+                        {/* Icon */}
+                        <a href={app.link} target="_blank" rel="noopener noreferrer" className="w-16 h-16 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shadow-inner group-hover:scale-105 transition-transform block">
                           <img 
                             src={app.iconUrl} 
                             alt={app.name} 
                             className="w-full h-full object-cover" 
                             onError={(e) => { e.target.src = 'https://via.placeholder.com/150?text=App'; }}
                           />
-                        </div>
-                        
-                        {/* Box Text */}
-                        <div className="flex-1 min-w-0">
-                          {/* Đã xoá class w-full gây lỗi */}
-                          <h3 className="font-bold text-gray-900 text-lg truncate mb-1">{app.name}</h3>
-                          <p className="text-sm text-gray-500 line-clamp-2 leading-snug mb-2 whitespace-normal">{app.description}</p>
+                        </a>
+
+                        {/* Text Container - Dùng overflow-hidden là "liều thuốc tiên" chống co rút chữ */}
+                        <div className="flex-1 overflow-hidden">
+                          <a href={app.link} target="_blank" rel="noopener noreferrer" className="block w-full">
+                            <h3 className="font-bold text-gray-900 text-lg truncate w-full" title={app.name}>{app.name}</h3>
+                            <p className="text-sm text-gray-500 line-clamp-2 leading-tight mt-1 h-[2.5rem] w-full">{app.description}</p>
+                          </a>
                           
-                          <div className="flex items-center gap-2 overflow-hidden">
-                            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md flex items-center border border-blue-100 max-w-[120px] truncate flex-shrink-0">
+                          <div className="flex flex-wrap items-center gap-2 mt-2 w-full overflow-hidden">
+                            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md flex items-center border border-blue-100 truncate">
                               {getCategoryIcon(app.category)}
                               <span className="truncate">{app.category}</span>
                             </span>
                             {app.releaseDate && (
-                              <span className="text-[10px] font-bold text-slate-500 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200 flex-shrink-0 hidden sm:inline-block truncate">
+                              <span className="text-[10px] font-bold text-slate-500 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200 truncate hidden sm:inline-block">
                                 {new Date(app.releaseDate).toLocaleDateString('vi-VN')}
                               </span>
                             )}
                           </div>
                         </div>
 
-                      </a>
-
-                      {/* Nút Admin */}
-                      {isAdmin && (
-                        <div className="flex flex-col gap-2 ml-2 border-l border-slate-100 pl-3 flex-shrink-0">
-                          <button onClick={() => handleOpenForm(app)} className="p-1.5 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-md transition-colors"><Edit size={16} /></button>
-                          <button onClick={() => handleDeleteApp(app.id, app.name)} className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors"><Trash2 size={16} /></button>
-                        </div>
-                      )}
+                        {/* Admin Buttons */}
+                        {isAdmin && (
+                          <div className="flex flex-col gap-2 pl-3 border-l border-gray-100 flex-shrink-0">
+                            <button onClick={() => handleOpenForm(app)} className="p-2 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors"><Edit size={16} /></button>
+                            <button onClick={() => handleDeleteApp(app.id, app.name)} className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={16} /></button>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
