@@ -315,9 +315,12 @@ export default function App() {
                 alt="Logo" 
                 className="w-10 h-10 md:w-12 md:h-12 mr-3 object-contain drop-shadow-[0_0_15px_rgba(34,211,238,0.8)] group-hover:scale-110 transition-transform duration-300"
               />
-              {/* THAY ĐỔI: Thêm animate-title-glow, tinh chỉnh lại màu dải gradient để chữ phát sáng mượt mà */}
-              <h1 className="text-2xl md:text-3xl font-black tracking-widest font-tech uppercase text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-cyan-400 animate-title-glow drop-shadow-[0_0_15px_rgba(34,211,238,0.8)] flex items-center">
-                Hoàng<span className="text-cyan-50 ml-2 font-light tracking-normal drop-shadow-md">Appstore</span>
+              {/* THAY ĐỔI: Tách riêng hiệu ứng cho từng phần chữ */}
+              <h1 className="text-2xl md:text-3xl font-black tracking-widest font-tech uppercase flex items-center">
+                {/* Chữ HOÀNG màu xanh neon phát sáng */}
+                <span className="text-cyan-400 [text-shadow:0_0_15px_rgba(34,211,238,0.8)]">Hoàng</span>
+                {/* Chữ APPSTORE hiệu ứng kim loại lướt sáng */}
+                <span className="ml-2 font-light tracking-normal animate-metal-shine drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)]">Appstore</span>
               </h1>
             </div>
 
@@ -441,8 +444,11 @@ export default function App() {
                           <a href={app.link} target="_blank" rel="noopener noreferrer" className="block w-full">
                             {/* Font thường (font-normal) trên Mobile, đậm trên Desktop */}
                             <h3 className="font-normal sm:font-bold text-gray-800 sm:text-gray-900 text-[11px] sm:text-sm line-clamp-2 sm:truncate w-full leading-tight sm:leading-normal" title={app.name}>{app.name}</h3>
-                            {/* Mô tả ẩn hoàn toàn trên Mobile để tiết kiệm không gian */}
-                            <p className="hidden sm:block text-xs text-gray-500 line-clamp-2 leading-tight mt-1 min-h-[2rem] w-full">{app.description}</p>
+                            
+                            {/* THAY ĐỔI: Bọc thẻ p vào một thẻ div để class 'block' không ghi đè làm hỏng 'line-clamp' */}
+                            <div className="hidden sm:block mt-1 w-full">
+                              <p className="text-xs text-gray-500 line-clamp-2 leading-tight min-h-[2rem] w-full">{app.description}</p>
+                            </div>
                           </a>
                           
                           {/* Tags ẩn trên Mobile */}
@@ -688,14 +694,26 @@ export default function App() {
       <style dangerouslySetInnerHTML={{__html: `
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&display=swap');
         
-        /* HIỆU ỨNG TEXT TIÊU ĐỀ */
-        @keyframes text-gradient-run {
+        /* THAY ĐỔI: HIỆU ỨNG CHỮ KIM LOẠI ÁNH SÁNG CHẠY */
+        @keyframes text-metal-shine {
           0% { background-position: 0% 50%; }
           100% { background-position: 200% 50%; }
         }
-        .animate-title-glow {
+        .animate-metal-shine {
+          background: linear-gradient(
+            120deg,
+            #94a3b8 0%,    /* Xám bạc tối */
+            #e2e8f0 25%,   /* Bạc sáng */
+            #ffffff 45%,   /* Vệt sáng lóa */
+            #ffffff 55%,   /* Vệt sáng lóa */
+            #e2e8f0 75%,   /* Bạc sáng */
+            #94a3b8 100%   /* Xám bạc tối */
+          );
           background-size: 200% auto;
-          animation: text-gradient-run 4s linear infinite;
+          color: transparent;
+          -webkit-background-clip: text;
+          background-clip: text;
+          animation: text-metal-shine 3s linear infinite;
         }
 
         /* Ép ứng dụng tràn viền 100% */
