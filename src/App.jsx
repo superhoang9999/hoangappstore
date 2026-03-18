@@ -294,17 +294,18 @@ export default function App() {
   });
 
   return (
-    // Xóa background xám, đặt thẳng background trắng cho toàn bộ body
-    <div className="min-h-screen bg-white text-slate-800 font-sans selection:bg-cyan-500 selection:text-white flex flex-col">
-      {/* XÓA BỎ HOÀN TOÀN max-w, shadow, border, rounded. Nền trắng bung lụa 100% width */}
+    // THIẾT LẬP W-FULL TUYỆT ĐỐI CHO CONTAINER NGOÀI CÙNG
+    <div className="min-h-screen w-full bg-white text-slate-800 font-sans selection:bg-cyan-500 selection:text-white flex flex-col m-0 p-0 overflow-x-hidden">
+      
+      {/* VÙNG NỘI DUNG CHÍNH CŨNG TRÀN VIỀN W-FULL, KHÔNG CÓ BẤT KỲ MAX-W NÀO */}
       <div className="w-full bg-white min-h-screen relative flex flex-col">
         
-        {/* Header: Vẫn giữ padding để nội dung bên trong Header không chạm sát lề màn hình */}
-        <div className="bg-slate-900 relative px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pt-8 pb-6 text-white sticky top-0 z-40 shadow-[0_10px_30px_-10px_rgba(6,182,212,0.4)] border-b border-cyan-500/30">
+        {/* Header Header tràn viền 100% */}
+        <div className="bg-slate-900 relative px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 pt-8 pb-6 text-white sticky top-0 z-40 shadow-[0_10px_30px_-10px_rgba(6,182,212,0.4)] border-b border-cyan-500/30 w-full">
           <div className="absolute inset-0 opacity-20 grid-pattern pointer-events-none"></div>
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-cyan-500/10 to-transparent pointer-events-none"></div>
           
-          <div className="flex flex-col md:flex-row justify-between items-center gap-5 relative z-10">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-5 relative z-10 w-full">
             <div className="flex items-center group cursor-pointer flex-shrink-0">
               <img 
                 src="https://lh3.googleusercontent.com/d/1RjUhWb2asNqhetIBybpZJ8EVCqYQDdo5" 
@@ -316,7 +317,7 @@ export default function App() {
               </h1>
             </div>
 
-            {/* Thanh tìm kiếm có max-width để không bị kéo dài vô tận xấu xí */}
+            {/* Thanh tìm kiếm có max-width để trông cân đối */}
             <div className="relative w-full max-w-full md:max-w-xl lg:max-w-2xl xl:max-w-3xl group mx-auto">
               <Search className="absolute left-4 top-3.5 text-cyan-500 group-focus-within:text-cyan-300 transition-colors" size={20} />
               <input 
@@ -342,7 +343,7 @@ export default function App() {
           </div>
 
           {/* View Toggle */}
-          <div className="flex justify-center mt-6 relative z-10">
+          <div className="flex justify-center mt-6 relative z-10 w-full">
             <div className="bg-slate-950/60 p-1.5 rounded-full border border-cyan-500/30 flex shadow-inner backdrop-blur-sm">
               <button
                 onClick={() => setActiveView('apps')}
@@ -360,10 +361,10 @@ export default function App() {
           </div>
         </div>
 
-        {/* Content Area */}
+        {/* Content Area - Tràn viền 100% */}
         {activeView === 'apps' ? (
-          <div className="pb-24">
-            <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-4 overflow-x-auto no-scrollbar bg-slate-50 flex gap-3 border-b border-slate-200">
+          <div className="pb-24 w-full">
+            <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-4 overflow-x-auto no-scrollbar bg-slate-50 flex gap-3 border-b border-slate-200 w-full">
               {displayCategories.map(cat => (
                 <button
                   key={cat}
@@ -388,7 +389,7 @@ export default function App() {
               </div>
             )}
 
-            <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mt-6">
+            <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mt-6 w-full">
               {loading ? (
                 <div className="flex justify-center py-20"><Loader2 className="animate-spin text-cyan-600" size={32} /></div>
               ) : filteredApps.length === 0 ? (
@@ -397,8 +398,7 @@ export default function App() {
                   <p>Chưa có kết quả tìm kiếm phù hợp.</p>
                 </div>
               ) : (
-                /* THAY ĐỔI CỐT LÕI: auto-fill, minmax(300px, 1fr) - Tự động dàn hàng ngang ra vô tận nếu có chỗ */
-                <div className="grid [grid-template-columns:repeat(auto-fill,minmax(300px,1fr))] gap-6">
+                <div className="grid [grid-template-columns:repeat(auto-fill,minmax(280px,1fr))] gap-5 lg:gap-6 w-full">
                   {filteredApps.map(app => (
                     <div key={app.id} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-lg hover:border-cyan-300 transition-all group relative w-full h-full block">
                       
@@ -412,10 +412,10 @@ export default function App() {
                         </div>
                       </div>
 
-                      <div className="flex items-center w-full h-full gap-4 min-w-0">
+                      <div className="flex items-center w-full h-full gap-3 sm:gap-4 min-w-0">
                         
                         {/* Icon */}
-                        <a href={app.link} target="_blank" rel="noopener noreferrer" className="w-16 h-16 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shadow-inner group-hover:scale-105 transition-transform block">
+                        <a href={app.link} target="_blank" rel="noopener noreferrer" className="w-14 h-14 sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100 shadow-inner group-hover:scale-105 transition-transform block">
                           <img 
                             src={app.iconUrl} 
                             alt={app.name} 
@@ -427,8 +427,10 @@ export default function App() {
                         {/* Text Container */}
                         <div className="flex-1 overflow-hidden">
                           <a href={app.link} target="_blank" rel="noopener noreferrer" className="block w-full">
-                            <h3 className="font-bold text-gray-900 text-lg truncate w-full" title={app.name}>{app.name}</h3>
-                            <p className="text-sm text-gray-500 line-clamp-2 leading-tight mt-1 h-[2.5rem] w-full">{app.description}</p>
+                            {/* THAY ĐỔI: Giảm size chữ xuống text-base (16px) thay vì text-lg */}
+                            <h3 className="font-bold text-gray-900 text-base truncate w-full" title={app.name}>{app.name}</h3>
+                            {/* THAY ĐỔI: Giảm size chữ mô tả xuống text-[13px] */}
+                            <p className="text-[13px] text-gray-500 line-clamp-2 leading-tight mt-1 min-h-[2.25rem] w-full">{app.description}</p>
                           </a>
                           
                           <div className="flex flex-wrap items-center gap-2 mt-2 w-full overflow-hidden">
@@ -446,9 +448,9 @@ export default function App() {
 
                         {/* Admin Buttons */}
                         {isAdmin && (
-                          <div className="flex flex-col gap-2 pl-3 border-l border-gray-100 flex-shrink-0">
-                            <button onClick={() => handleOpenForm(app)} className="p-2 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors"><Edit size={16} /></button>
-                            <button onClick={() => handleDeleteApp(app.id, app.name)} className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={16} /></button>
+                          <div className="flex flex-col gap-2 pl-2 sm:pl-3 border-l border-gray-100 flex-shrink-0">
+                            <button onClick={() => handleOpenForm(app)} className="p-1.5 sm:p-2 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors"><Edit size={14} className="sm:w-4 sm:h-4" /></button>
+                            <button onClick={() => handleDeleteApp(app.id, app.name)} className="p-1.5 sm:p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} className="sm:w-4 sm:h-4" /></button>
                           </div>
                         )}
                       </div>
@@ -460,14 +462,13 @@ export default function App() {
           </div>
         ) : (
           <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 pb-24 w-full">
-            <div className="w-full">
+            <div className="w-full mx-auto">
               <div className="flex items-center mb-8">
                 <Youtube className="text-red-500 mr-3 drop-shadow-md" size={32} />
                 <h2 className="text-2xl font-black text-slate-800 font-tech uppercase tracking-wider">Danh Sách Phát AI</h2>
               </div>
               
-              {/* Tương tự với Video AI: Tự động sắp xếp cột theo chiều rộng màn hình */}
-              <div className="grid [grid-template-columns:repeat(auto-fill,minmax(350px,1fr))] gap-6">
+              <div className="grid [grid-template-columns:repeat(auto-fill,minmax(350px,1fr))] gap-6 w-full">
                 {AI_PLAYLISTS.map((pl) => (
                   <div 
                     key={pl.id}
@@ -483,8 +484,9 @@ export default function App() {
                       </div>
                     </div>
                     <div className="px-2">
-                      <h3 className="text-xl font-bold text-slate-800 group-hover:text-cyan-600 transition-colors mb-1">{pl.title}</h3>
-                      <p className="text-slate-500 text-sm leading-relaxed">{pl.description}</p>
+                      {/* THAY ĐỔI: Thu nhỏ title cho video AI */}
+                      <h3 className="text-lg font-bold text-slate-800 group-hover:text-cyan-600 transition-colors mb-1">{pl.title}</h3>
+                      <p className="text-slate-500 text-[13px] leading-relaxed">{pl.description}</p>
                     </div>
                   </div>
                 ))}
