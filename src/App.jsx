@@ -100,6 +100,17 @@ export default function App() {
   const [newCatName, setNewCatName] = useState('');
   const [catError, setCatError] = useState('');
   const [confirmDialog, setConfirmDialog] = useState(null);
+
+  // Thêm State cho phần Video AI
+  const [videos, setVideos] = useState([]);
+  const [showVideoForm, setShowVideoForm] = useState(false);
+  const [editingVideoId, setEditingVideoId] = useState(null);
+  const [videoFormData, setVideoFormData] = useState({
+    title: '',
+    description: '',
+    thumbnail: '',
+    youtubeId: ''
+  });
   
   // State lưu trữ số lượt truy cập
   const [visitorCount, setVisitorCount] = useState(0);
@@ -222,9 +233,18 @@ export default function App() {
       setDbCategories(catData);
     });
 
+    const videosRef = collection(db, 'store_videos');
+    const unsubVideos = onSnapshot(videosRef, (snapshot) => {
+      const vids = [];
+      snapshot.forEach(doc => vids.push({ id: doc.id, ...doc.data() }));
+      vids.sort((a, b) => b.createdAt - a.createdAt);
+      setVideos(vids);
+    });
+
     return () => {
       unsubApps();
       unsubCats();
+      unsubVideos();
     };
   }, [user]);
 
@@ -315,6 +335,52 @@ export default function App() {
     });
   };
 
+  // --- Chức năng Quản lý Playlist Video ---
+  const handleOpenVideoForm = (vidItem = null) => {
+    if (vidItem) {
+      setEditingVideoId(vidItem.id);
+      setVideoFormData({
+        title: vidItem.title || '',
+        description: vidItem.description || '',
+        thumbnail: vidItem.thumbnail || '',
+        youtubeId: vidItem.youtubeId || vidItem.id || ''
+      });
+    } else {
+      setEditingVideoId(null);
+      setVideoFormData({ title: '', description: '', thumbnail: '', youtubeId: '' });
+    }
+    setShowVideoForm(true);
+  };
+
+  const handleSaveVideo = async (e) => {
+    e.preventDefault();
+    setIsUploading(true);
+    try {
+      const dataToSave = { ...videoFormData, updatedAt: Date.now() };
+      if (editingVideoId) {
+        await updateDoc(doc(db, 'store_videos', editingVideoId), dataToSave);
+      } else {
+        await addDoc(collection(db, 'store_videos'), { ...dataToSave, createdAt: Date.now() });
+      }
+      setShowVideoForm(false);
+    } catch (error) {
+      setFormError(error.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleDeleteVideo = (id, title) => {
+    setConfirmDialog({
+      title: `Xoá Playlist "${title}"?`,
+      message: "Bạn có chắc chắn muốn xoá playlist này không?",
+      onConfirm: async () => {
+        await deleteDoc(doc(db, 'store_videos', id));
+        setConfirmDialog(null);
+      }
+    });
+  };
+
   const getCategoryIcon = (cat) => {
     if (!cat) return <LayoutGrid size={14} className="mr-1" />;
     
@@ -340,6 +406,9 @@ export default function App() {
     const matchesCategory = activeCategory === 'Tất cả' || app.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const DEFAULT_PLAYLISTS = AI_PLAYLISTS.map(pl => ({ ...pl, youtubeId: pl.id, id: pl.id + '_default' }));
+  const displayVideos = videos.length > 0 ? videos : DEFAULT_PLAYLISTS;
 
   return (
     // THIẾT LẬP W-FULL TUYỆT ĐỐI CHO CONTAINER NGOÀI CÙNG
@@ -535,16 +604,38 @@ export default function App() {
           </div>
         ) : (
           <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 pb-24 w-full">
+            
+            {isAdmin && (
+              <div className="w-full mx-auto mb-8 bg-slate-900 rounded-xl p-4 flex flex-col md:flex-row justify-between items-center gap-4 border border-cyan-500/30 shadow-lg relative overflow-hidden">
+                <div className="absolute inset-0 opacity-10 pointer-events-none grid-pattern"></div>
+                <div className="flex items-center text-cyan-400 font-bold uppercase tracking-widest text-sm relative z-10">
+                  <ShieldCheck size={20} className="mr-2 text-cyan-300 drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]" /> QUẢN LÝ PLAYLIST
+                </div>
+                <div className="flex gap-3 relative z-10 w-full md:w-auto">
+                  <button onClick={() => handleOpenVideoForm()} className="flex-1 md:flex-none px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg hover:from-cyan-400 hover:to-blue-500 font-bold text-sm shadow-[0_0_10px_rgba(6,182,212,0.4)] border border-cyan-400/50 transition"><Plus size={16} className="inline mr-1.5 font-bold"/>Thêm Playlist</button>
+                </div>
+              </div>
+            )}
+
             <div className="w-full mx-auto">
               <div className="flex items-center mb-8">
                 <Youtube className="text-red-500 mr-3 drop-shadow-md" size={32} />
-                <h2 className="text-2xl font-black text-slate-800 font-tech uppercase tracking-wider">Danh Sách Phát AI</h2>
+                {/* THAY ĐỔI: Sửa tiêu đề thành AI MUSIC COVER */}
+                <h2 className="text-2xl font-black text-slate-800 font-tech uppercase tracking-wider">AI MUSIC COVER</h2>
               </div>
               
               <div className="grid [grid-template-columns:repeat(auto-fill,minmax(350px,1fr))] gap-6 w-full">
-                {AI_PLAYLISTS.map((pl) => (
+                {displayVideos.map((pl) => (
                   /* Áp dụng cấu trúc y hệt cho Video AI với viền Neon mỏng chạy vòng quanh */
                   <div key={pl.id} onClick={() => setPlayingPlaylist(pl)} className="group relative block cursor-pointer transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_10px_25px_-5px_rgba(239,68,68,0.3)] rounded-3xl">
+
+                    {/* Admin Buttons cho Video */}
+                    {isAdmin && !pl.id.includes('_default') && (
+                      <div className="absolute top-4 right-4 flex flex-col gap-2 z-20">
+                        <button onClick={(e) => { e.stopPropagation(); handleOpenVideoForm(pl); }} className="p-2 bg-slate-900/80 backdrop-blur border border-cyan-500/50 text-cyan-400 hover:text-white hover:bg-cyan-600 rounded-full transition-colors shadow-lg"><Edit size={16}/></button>
+                        <button onClick={(e) => { e.stopPropagation(); handleDeleteVideo(pl.id, pl.title); }} className="p-2 bg-slate-900/80 backdrop-blur border border-red-500/50 text-red-400 hover:text-white hover:bg-red-600 rounded-full transition-colors shadow-lg"><Trash2 size={16}/></button>
+                      </div>
+                    )}
 
                     {/* Lớp viền neon màu đỏ */}
                     <div className="absolute -inset-[2px] rounded-[26px] opacity-0 group-hover:opacity-100 overflow-hidden pointer-events-none z-0">
@@ -637,7 +728,7 @@ export default function App() {
           <div className="w-full max-w-7xl aspect-video rounded-[3rem] shadow-[0_0_100px_rgba(6,182,212,0.15)] bg-black overflow-hidden border border-white/10 relative z-10 animate-in zoom-in-95">
             <iframe 
               className="w-full h-full"
-              src={`https://www.youtube.com/embed/videoseries?list=${playingPlaylist.id}&rel=0`}
+              src={`https://www.youtube.com/embed/videoseries?list=${playingPlaylist.youtubeId}&rel=0`}
               frameBorder="0" allowFullScreen
             ></iframe>
           </div>
@@ -711,6 +802,77 @@ export default function App() {
               </div>
               <button disabled={isUploading} type="submit" className="w-full bg-cyan-600 text-white font-black rounded-3xl py-5 hover:bg-cyan-700 transition shadow-xl disabled:opacity-50 uppercase tracking-widest text-lg">
                 {isUploading ? 'ĐANG LƯU DỮ LIỆU...' : 'HOÀN TẤT LƯU ỨNG DỤNG'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Video Playlist Form Modal */}
+      {showVideoForm && (
+        <div className="fixed inset-0 bg-slate-950/80 z-[100] flex items-center justify-center p-4 backdrop-blur-md">
+          <div className="bg-white rounded-[2.5rem] w-full max-w-2xl max-h-[90vh] overflow-y-auto p-8 shadow-2xl relative">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-3xl font-black text-slate-800 tracking-tight">{editingVideoId ? 'Cập Nhật Playlist' : 'Thêm Playlist Mới'}</h2>
+              <button onClick={() => setShowVideoForm(false)} className="p-2 bg-slate-100 rounded-full text-slate-500 hover:text-red-500 transition-colors"><X size={24} /></button>
+            </div>
+            
+            <form onSubmit={handleSaveVideo} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-xs font-black text-slate-400 uppercase mb-2 ml-1">Tên Playlist / Video</label>
+                  <input type="text" required value={videoFormData.title} onChange={(e)=>setVideoFormData({...videoFormData, title:e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-cyan-500 focus:bg-white transition-all" />
+                </div>
+                <div>
+                  <label className="block text-xs font-black text-slate-400 uppercase mb-2 ml-1">ID Playlist Youtube</label>
+                  <input 
+                    type="text" required value={videoFormData.youtubeId} 
+                    onChange={(e) => {
+                      let val = e.target.value;
+                      // Hỗ trợ dán cả link Youtube dài, tự động bóc tách lấy ID List
+                      const match = val.match(/[?&]list=([^&]+)/);
+                      if (match) val = match[1];
+                      setVideoFormData({...videoFormData, youtubeId: val});
+                    }} 
+                    placeholder="Dán link Youtube hoặc ID (VD: PLbRK...)" 
+                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-cyan-500 focus:bg-white transition-all" 
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-black text-slate-400 uppercase mb-2 ml-1">Mô tả tóm tắt</label>
+                <textarea rows="3" required value={videoFormData.description} onChange={(e)=>setVideoFormData({...videoFormData, description:e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 focus:ring-2 focus:ring-cyan-500 focus:bg-white transition-all resize-none"></textarea>
+              </div>
+              
+              <div className="bg-cyan-50 p-6 rounded-3xl border border-cyan-100">
+                <label className="block text-xs font-black text-cyan-700 uppercase mb-3 ml-1 flex items-center">
+                  <LinkIcon size={14} className="mr-2" /> Link ảnh Thumbnail (Google Drive/URL)
+                </label>
+                
+                <div className="flex gap-4 items-center">
+                  <div className="w-24 h-14 flex-shrink-0 bg-slate-900 rounded-xl border border-cyan-200 overflow-hidden shadow-sm flex items-center justify-center">
+                    <img 
+                      src={videoFormData.thumbnail || FALLBACK_IMAGE} 
+                      alt="preview" 
+                      className="w-full h-full object-cover opacity-80"
+                      onError={(e) => { e.target.onerror = null; e.target.src = FALLBACK_IMAGE; }}
+                    />
+                  </div>
+                  <input 
+                    type="url" required value={videoFormData.thumbnail} 
+                    onChange={(e) => {
+                      let val = e.target.value;
+                      const match = val.match(/(?:drive\.google\.com\/file\/d\/|drive\.google\.com\/open\?id=)([-_A-Za-z0-9]+)/);
+                      if (match) val = `https://lh3.googleusercontent.com/d/${match[1]}`;
+                      setVideoFormData({...videoFormData, thumbnail: val});
+                    }}
+                    className="flex-1 bg-white border border-cyan-200 rounded-xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-cyan-500 transition-all" 
+                    placeholder="Dán link ảnh Google Drive..."
+                  />
+                </div>
+              </div>
+              <button disabled={isUploading} type="submit" className="w-full bg-cyan-600 text-white font-black rounded-3xl py-5 hover:bg-cyan-700 transition shadow-xl disabled:opacity-50 uppercase tracking-widest text-lg">
+                {isUploading ? 'ĐANG LƯU DỮ LIỆU...' : 'HOÀN TẤT LƯU PLAYLIST'}
               </button>
             </form>
           </div>
