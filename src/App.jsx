@@ -16,7 +16,8 @@ import {
   Loader2,
   Youtube,
   AppWindow,
-  Play
+  Play,
+  ExternalLink // THÊM ICON NÀY
 } from 'lucide-react';
 
 // --- Firebase Initialization ---
@@ -112,6 +113,9 @@ export default function App() {
     youtubeId: ''
   });
   
+  // THÊM STATE ĐỂ LƯU ỨNG DỤNG ĐANG MỞ
+  const [playingApp, setPlayingApp] = useState(null);
+
   // State lưu trữ số lượt truy cập
   const [visitorCount, setVisitorCount] = useState(0);
 
@@ -540,58 +544,59 @@ export default function App() {
                         </div>
                       </div>
 
-                      {/* 3. NỘI DUNG THẺ: Tối ưu cho Mobile (Xếp dọc, ẩn mô tả) và Desktop (Xếp ngang, hiển thị đầy đủ) */}
+                      {/* 3. NỘI DUNG THẺ: Tối ưu cho Mobile và Desktop */}
                       <div className="relative z-10 w-full h-full bg-white border border-gray-100 group-hover:border-transparent rounded-2xl p-3 sm:p-4 flex flex-col sm:flex-row items-center gap-2 sm:gap-4 min-w-0 transition-colors">
                         
-                        {/* Icon */}
-                        <a href={app.link} target="_blank" rel="noopener noreferrer" className="w-[52px] h-[52px] sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-[14px] sm:rounded-xl overflow-hidden border border-gray-100 shadow-inner group-hover:scale-105 transition-transform block">
-                          <img 
-                            src={app.iconUrl || FALLBACK_IMAGE} 
-                            alt={app.name} 
-                            className="w-full h-full object-cover" 
-                            onError={(e) => { e.target.onerror = null; e.target.src = FALLBACK_IMAGE; }}
-                          />
-                        </a>
-
-                        {/* Text Container */}
-                        <div className="flex-1 overflow-hidden w-full text-center sm:text-left flex flex-col justify-center">
-                          <a href={app.link} target="_blank" rel="noopener noreferrer" className="block w-full">
-                            {/* Font thường (font-normal) trên Mobile, đậm trên Desktop */}
-                            <h3 className="font-normal sm:font-bold text-gray-800 sm:text-gray-900 text-[11px] sm:text-sm line-clamp-2 sm:truncate w-full leading-tight sm:leading-normal" title={app.name}>{app.name}</h3>
-                            
-                            {/* THAY ĐỔI: Bọc thẻ p vào một thẻ div để class 'block' không ghi đè làm hỏng 'line-clamp' */}
-                            <div className="hidden sm:block mt-1 w-full">
-                              <p className="text-xs text-gray-500 line-clamp-2 leading-tight min-h-[2rem] w-full">{app.description}</p>
-                            </div>
-                          </a>
+                        {/* THAY ĐỔI: Nhóm chung Icon và Text thành 1 nút bấm mở App, không dùng thẻ <a> nữa */}
+                        <div onClick={() => setPlayingApp(app)} className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full cursor-pointer overflow-hidden flex-1">
                           
-                          {/* Tags ẩn trên Mobile */}
-                          <div className="hidden sm:flex flex-wrap items-center gap-2 mt-1 w-full overflow-hidden">
-                            <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md flex items-center border border-blue-100 truncate">
-                              {getCategoryIcon(app.category)}
-                              <span className="truncate">{app.category}</span>
-                            </span>
-                            {app.releaseDate && (
-                              <span className="text-[10px] font-bold text-slate-500 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200 truncate hidden sm:inline-block">
-                                {new Date(app.releaseDate).toLocaleDateString('vi-VN')}
+                          {/* Icon */}
+                          <div className="w-[52px] h-[52px] sm:w-16 sm:h-16 flex-shrink-0 bg-gray-50 rounded-[14px] sm:rounded-xl overflow-hidden border border-gray-100 shadow-inner group-hover:scale-105 transition-transform">
+                            <img 
+                              src={app.iconUrl || FALLBACK_IMAGE} 
+                              alt={app.name} 
+                              className="w-full h-full object-cover" 
+                              onError={(e) => { e.target.onerror = null; e.target.src = FALLBACK_IMAGE; }}
+                            />
+                          </div>
+
+                          {/* Text Container */}
+                          <div className="flex-1 overflow-hidden w-full text-center sm:text-left flex flex-col justify-center">
+                            <div className="block w-full">
+                              <h3 className="font-normal sm:font-bold text-gray-800 sm:text-gray-900 text-[11px] sm:text-sm line-clamp-2 sm:truncate w-full leading-tight sm:leading-normal" title={app.name}>{app.name}</h3>
+                              <div className="hidden sm:block mt-1 w-full">
+                                <p className="text-xs text-gray-500 line-clamp-2 leading-tight min-h-[2rem] w-full">{app.description}</p>
+                              </div>
+                            </div>
+                            
+                            {/* Tags ẩn trên Mobile */}
+                            <div className="hidden sm:flex flex-wrap items-center gap-2 mt-1 w-full overflow-hidden">
+                              <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md flex items-center border border-blue-100 truncate">
+                                {getCategoryIcon(app.category)}
+                                <span className="truncate">{app.category}</span>
                               </span>
-                            )}
+                              {app.releaseDate && (
+                                <span className="text-[10px] font-bold text-slate-500 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200 truncate hidden sm:inline-block">
+                                  {new Date(app.releaseDate).toLocaleDateString('vi-VN')}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
 
                         {/* Admin Buttons - Desktop */}
                         {isAdmin && (
-                          <div className="hidden sm:flex flex-col gap-2 pl-2 sm:pl-3 border-l border-gray-100 flex-shrink-0">
-                            <button onClick={() => handleOpenForm(app)} className="p-1.5 sm:p-2 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors"><Edit size={14} className="sm:w-4 sm:h-4" /></button>
-                            <button onClick={() => handleDeleteApp(app.id, app.name)} className="p-1.5 sm:p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} className="sm:w-4 sm:h-4" /></button>
+                          <div className="hidden sm:flex flex-col gap-2 pl-2 sm:pl-3 border-l border-gray-100 flex-shrink-0 relative z-20">
+                            <button onClick={(e) => { e.stopPropagation(); handleOpenForm(app); }} className="p-1.5 sm:p-2 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors"><Edit size={14} className="sm:w-4 sm:h-4" /></button>
+                            <button onClick={(e) => { e.stopPropagation(); handleDeleteApp(app.id, app.name); }} className="p-1.5 sm:p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} className="sm:w-4 sm:h-4" /></button>
                           </div>
                         )}
                         
-                        {/* Admin Buttons - Phụ riêng cho Mobile (nhỏ gọn ở góc) */}
+                        {/* Admin Buttons - Phụ riêng cho Mobile */}
                         {isAdmin && (
-                          <div className="flex sm:hidden absolute top-1 right-1 flex-col gap-1">
-                            <button onClick={() => handleOpenForm(app)} className="p-1.5 text-cyan-600 bg-white/90 backdrop-blur-sm rounded-full shadow-sm border border-gray-100"><Edit size={12} /></button>
-                            <button onClick={() => handleDeleteApp(app.id, app.name)} className="p-1.5 text-red-500 bg-white/90 backdrop-blur-sm rounded-full shadow-sm border border-gray-100"><Trash2 size={12} /></button>
+                          <div className="flex sm:hidden absolute top-1 right-1 flex-col gap-1 z-20">
+                            <button onClick={(e) => { e.stopPropagation(); handleOpenForm(app); }} className="p-1.5 text-cyan-600 bg-white/90 backdrop-blur-sm rounded-full shadow-sm border border-gray-100"><Edit size={12} /></button>
+                            <button onClick={(e) => { e.stopPropagation(); handleDeleteApp(app.id, app.name); }} className="p-1.5 text-red-500 bg-white/90 backdrop-blur-sm rounded-full shadow-sm border border-gray-100"><Trash2 size={12} /></button>
                           </div>
                         )}
                       </div>
@@ -733,6 +738,42 @@ export default function App() {
             ></iframe>
           </div>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-cyan-500/10 blur-[150px] rounded-full pointer-events-none"></div>
+        </div>
+      )}
+
+      {/* THÊM MỚI: Modal Trình Duyệt Ứng Dụng (In-App Browser) */}
+      {playingApp && (
+        <div className="fixed inset-0 z-[250] bg-white flex flex-col animate-in slide-in-from-bottom-8 duration-300">
+          {/* Thanh Header của App */}
+          <div className="h-14 bg-slate-900 text-white flex items-center justify-between px-4 shadow-lg z-10 shrink-0 border-b border-cyan-500/30">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <img 
+                src={playingApp.iconUrl || FALLBACK_IMAGE} 
+                alt={playingApp.name} 
+                className="w-8 h-8 rounded-lg bg-white object-cover shadow-[0_0_10px_rgba(34,211,238,0.3)]" 
+                onError={(e) => { e.target.onerror = null; e.target.src = FALLBACK_IMAGE; }}
+              />
+              <h3 className="font-bold text-sm sm:text-base truncate font-tech tracking-wide text-cyan-50">{playingApp.name}</h3>
+            </div>
+            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+              <a href={playingApp.link} target="_blank" rel="noopener noreferrer" title="Mở ra tab mới" className="p-2 hover:bg-slate-800 rounded-full transition-colors text-cyan-400 hover:text-cyan-300">
+                <ExternalLink size={18} />
+              </a>
+              <button onClick={() => setPlayingApp(null)} title="Đóng ứng dụng" className="p-2 hover:bg-red-600 hover:text-white rounded-full transition-colors text-slate-300 ml-1">
+                <X size={20} />
+              </button>
+            </div>
+          </div>
+          
+          {/* Khu vực hiển thị Web App */}
+          <div className="flex-1 w-full bg-slate-50 relative">
+            <iframe 
+              src={playingApp.link} 
+              title={playingApp.name}
+              className="w-full h-full border-0" 
+              allow="camera; microphone; fullscreen; clipboard-read; clipboard-write; display-capture"
+            ></iframe>
+          </div>
         </div>
       )}
 
